@@ -1,0 +1,37 @@
+{
+  "name": "frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
+  },
+  "dependencies": {
+    "@emotion/babel-preset-css-prop": "^11.10.0",
+    "@emotion/react": "^11.10.8",
+    "@emotion/styled": "^11.10.8",
+    "@fontsource/material-icons": "^4.5.4",
+    "@fontsource/roboto": "^4.5.8",
+    "@mui/material": "^5.12.3",
+    "@mui/system": "^5.12.3",
+    "@storybook/addon-styling": "^1.0.5",
+    "next": "13.3.4",
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  },
+  "devDependencies": {
+    "@emotion/babel-plugin": "^11.10.8",
+    "@storybook/addon-essentials": "^7.0.7",
+    "@storybook/addon-interactions": "^7.0.7",
+    "@storybook/addon-links": "^7.0.7",
+    "@storybook/blocks": "^7.0.7",
+    "@storybook/nextjs": "^7.0.7",
+    "@storybook/react": "^7.0.7",
+    "@storybook/testing-library": "^0.0.14-next.2",
+    "storybook": "^7.0.7"
+  }
+}
