@@ -1,9 +1,10 @@
 version: '3'
 services:
   # next-frontend: # Not needed for now because the front end hardly exists yet
+  #   container_name: next-frontend
   #   build: ./frontend
   #   ports:
-  #     - "3000:3000"
+  #     - "####:####"
   #   volumes:
   #     - .:/app
   #   environment:
@@ -13,58 +14,70 @@ services:
   #   depends_on:
   #     - all the API services
   auth-api:
+    container_name: auth-api
     build: ./auth-api
     ports:
-      - "3001:3001"
+      - "8000:8000"
     volumes:
       - ./auth-api:/app
     # environment:
     depends_on:
       - auth-db
+      - eureka
   auth-db:
     image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: auth-db
     ports:
       - "1433:1433"
     volumes:
-      - ./auth-db:/var/opt/mssql
+      - /var/opt/mssql
     environment:
       SA_PASSWORD: "Password123"
       ACCEPT_EULA: "Y"
-  profile-api:
-    build: ./profile-api
-    ports:
-      - "3002:3002"
-    volumes:
-      - ./profile-api:/app
-    # environment:
-    depends_on:
-      - profile-db
+  # profile-api:
+  #   container_name: profile-api
+  #   build: ./profile-api
+  #   ports:
+  #     - "8001:8000"
+  #   volumes:
+  #     - ./profile-api:/app
+  #   # environment:
+  #   depends_on:
+  #     - profile-db
   profile-db:
-    image: bitnami/mongodb:latest
+    image: mongo:latest
+    container_name: profile-db
     ports:
       - "27017:27017"
     volumes:
-      - ./profile-db:/bitnami
+      - /var/lib/mongo
     environment:
-      MONGODB_USERNAME: "root"
-      MONGODB_PASSWORD: "Password123"
-      MONGODB_DATABASE: "profile"
+      MONGO_INITDB_ROOT_USERNAME: "root"
+      MONGO_INITDB_ROOT_PASSWORD: "Password123"
+      MONGO_INITDB_DATABASE: "profile"
   # message-api: # Not my part so I don't know what it'll actually look like
+  #   container_name: message-api
   #   build: ./message-api
   #   ports:
-  #     - "3003:3003"
+  #     - "8003:8000"
   #   volumes:
   #     - ./message-api:/app
   #   # environment:
   #   depends_on:
   #     - message-db
   message-db:
-    image: bitnami/mongodb:latest
+    image: mongo:latest
+    container_name: message-db
     ports:
       - "27018:27017"
     volumes:
-      - ./message-db:/bitnami
+      - /var/lib/mongo
     environment:
-      MONGODB_USERNAME: "root"
-      MONGODB_PASSWORD: "Password123"
-      MONGODB_DATABASE: "message"
+      MONGO_INITDB_ROOT_USERNAME: "root"
+      MONGO_INITDB_ROOT_PASSWORD: "Password123"
+      MONGO_INITDB_DATABASE: "message"
+  eureka:
+    image: steeltoeoss/eureka-server:latest
+    container_name: sada-eureka
+    ports:
+      - "8761:8761"
