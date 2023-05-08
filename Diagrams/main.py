@@ -40,8 +40,8 @@ with Diagram("Stuffed Animal Dating App", show=False):
             gateway = APIGateway("Kong gateway")
             email = SimpleEmailServiceSesEmail("Email Service \n (FastAPI)")
 
-    pythonAPIs[0] >> sqlDB
-    pythonAPIs[1] >> mongoDBs[0]
+    pythonAPIs[1] >> sqlDB
+    pythonAPIs[0] >> mongoDBs[0]
     csharpAPI >> mongoDBs[1]
 
     users >> react >> gateway

@@ -1,0 +1,70 @@
+version: '3'
+services:
+  # next-frontend: # Not needed for now because the front end hardly exists yet
+  #   build: ./frontend
+  #   ports:
+  #     - "3000:3000"
+  #   volumes:
+  #     - .:/app
+  #   environment:
+  #     - NODE_ENV=development
+  #     - CHOKIDAR_USEPOLLING=true
+  #   command: "npm run dev"
+  #   depends_on:
+  #     - all the API services
+  auth-api:
+    build: ./auth-api
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./auth-api:/app
+    # environment:
+    depends_on:
+      - auth-db
+  auth-db:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    ports:
+      - "1433:1433"
+    volumes:
+      - ./auth-db:/var/opt/mssql
+    environment:
+      SA_PASSWORD: "Password123"
+      ACCEPT_EULA: "Y"
+  profile-api:
+    build: ./profile-api
+    ports:
+      - "3002:3002"
+    volumes:
+      - ./profile-api:/app
+    # environment:
+    depends_on:
+      - profile-db
+  profile-db:
+    image: bitnami/mongodb:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./profile-db:/bitnami
+    environment:
+      MONGODB_USERNAME: "root"
+      MONGODB_PASSWORD: "Password123"
+      MONGODB_DATABASE: "profile"
+  # message-api: # Not my part so I don't know what it'll actually look like
+  #   build: ./message-api
+  #   ports:
+  #     - "3003:3003"
+  #   volumes:
+  #     - ./message-api:/app
+  #   # environment:
+  #   depends_on:
+  #     - message-db
+  message-db:
+    image: bitnami/mongodb:latest
+    ports:
+      - "27018:27017"
+    volumes:
+      - ./message-db:/bitnami
+    environment:
+      MONGODB_USERNAME: "root"
+      MONGODB_PASSWORD: "Password123"
+      MONGODB_DATABASE: "message"
