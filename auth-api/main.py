@@ -12,6 +12,8 @@ from contextlib import asynccontextmanager
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session
 
+from models.user_auth_models import User_create, User_auth
+
 # TUTORIAL: https://docs.sqlalchemy.org/en/20/tutorial/metadata.html
 
 
@@ -68,3 +70,41 @@ async def root(Authorize: AuthJWT = Depends()):
     if current_user is None:
         return {"message": "Hello World"}
     return {"message": f"Hello {current_user}"}
+
+
+@app.post("/register")
+async def register(user_in: User_create):
+    new_user = User_auth(**user_in.dict())  # check if user exists
+    # if so, return error
+    # if not, create user
+
+
+@app.post("/login")
+async def login(user_in: User_create, Authorize: AuthJWT = Depends()):
+    Authorize.jwt_required()
+    current_user = Authorize.get_jwt_subject()
+    # check if user exists
+    # if not, return error
+    # if so, check if password matches
+    # if not, return error
+    # if so, return JWT token
+
+
+@app.patch("/update/{user_id}")
+async def update(user_auth: User_auth, user_id: str, Authorize: AuthJWT = Depends()):
+    Authorize.jwt_required()
+    current_user = Authorize.get_jwt_subject()
+    # check if logged in user is the same as the user being updated (or if logged in user is admin)
+    # check if target user exists (only if admin, otherwise it is implied)
+    # if not, return error
+    # if so, update user
+
+
+@app.delete("/delete/{user_id}")
+async def delete(user_id: str, Authorize: AuthJWT = Depends()):
+    Authorize.jwt_required()
+    current_user = Authorize.get_jwt_subject()
+    # check if logged in user is the same as the user being deleted (or if logged in user is admin)
+    # check if target user exists (only if admin, otherwise it is implied)
+    # if not, return error
+    # if so, delete user

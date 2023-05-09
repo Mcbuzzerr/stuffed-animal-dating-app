@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import Optional
 from datetime import datetime
+from uuid6 import uuid7
 
 
 class Message_in(BaseModel):
@@ -19,7 +20,7 @@ class Message(Message_in):
 
 class Conversation(BaseModel):
     # GUID of conversation
-    conversationGUID: str = Field(...)
+    conversationGUID: str = Field(uuid7())
     # GUID of person 1
     person1: str
     # GUID of person 2
