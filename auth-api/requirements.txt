@@ -1,4 +1,6 @@
 anyio==3.6.2
+certifi==2023.5.7
+charset-normalizer==3.1.0
 click==8.1.3
 colorama==0.4.6
 dnspython==2.3.0
@@ -13,9 +15,11 @@ pydantic==1.10.7
 PyJWT==1.7.1
 pyodbc==4.0.39
 python-decouple==3.8
+requests==2.30.0
 sniffio==1.3.0
 SQLAlchemy==2.0.12
 starlette==0.26.1
 typing_extensions==4.5.0
+urllib3==2.0.2
 uuid6==2023.5.2
 uvicorn==0.22.0

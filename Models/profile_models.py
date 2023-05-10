@@ -3,8 +3,15 @@ from typing import Optional
 from uuid6 import uuid7
 
 
+class Like(BaseModel):
+    # GUID of recipient
+    recipientGUID: str
+    # Message to send
+    message: str
+
+
 class Profile(BaseModel):
-    profileGUID: str = Field(uuid7())  # Will generate GUID on creation
+    profileGUID: str = Field(default_factory=uuid7())  # Will generate GUID on creation
     # User's name
     name: str
     # User's age
@@ -20,7 +27,7 @@ class Profile(BaseModel):
     # List of IDs corresponding to matches
     matches: Optional[list[str]] = []
     # List of IDs corresponding to liked users
-    likes: Optional[list[str]] = []
+    likes: Optional[list[Like]] = []
     # List of IDs corresponding to diliked users
     dislikes: Optional[list[str]] = []
     # Whether or not to send notifications

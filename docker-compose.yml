@@ -20,7 +20,6 @@ services:
       - "8000:8000"
     volumes:
       - ./auth-api:/app
-    # environment:
     depends_on:
       - auth-db
       - eureka
@@ -34,16 +33,15 @@ services:
     environment:
       SA_PASSWORD: "Password123"
       ACCEPT_EULA: "Y"
-  # profile-api:
-  #   container_name: profile-api
-  #   build: ./profile-api
-  #   ports:
-  #     - "8001:8000"
-  #   volumes:
-  #     - ./profile-api:/app
-  #   # environment:
-  #   depends_on:
-  #     - profile-db
+  profile-api:
+    container_name: profile-api
+    build: ./profile-api
+    ports:
+      - "8001:8000"
+    volumes:
+      - ./profile-api:/app
+    depends_on:
+      - profile-db
   profile-db:
     image: mongo:latest
     container_name: profile-db
@@ -53,7 +51,7 @@ services:
       - /var/lib/mongo
     environment:
       MONGO_INITDB_ROOT_USERNAME: "root"
-      MONGO_INITDB_ROOT_PASSWORD: "Password123"
+      MONGO_INITDB_ROOT_PASSWORD: "pass"
       MONGO_INITDB_DATABASE: "profile"
   # message-api: # Not my part so I don't know what it'll actually look like
   #   container_name: message-api
@@ -74,7 +72,7 @@ services:
       - /var/lib/mongo
     environment:
       MONGO_INITDB_ROOT_USERNAME: "root"
-      MONGO_INITDB_ROOT_PASSWORD: "Password123"
+      MONGO_INITDB_ROOT_PASSWORD: "pass"
       MONGO_INITDB_DATABASE: "message"
   eureka:
     image: steeltoeoss/eureka-server:latest

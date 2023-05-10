@@ -20,7 +20,7 @@ class Message(Message_in):
 
 class Conversation(BaseModel):
     # GUID of conversation
-    conversationGUID: str = Field(uuid7())
+    conversationGUID: str = Field(default_factory=uuid7())
     # GUID of person 1
     person1: str
     # GUID of person 2
