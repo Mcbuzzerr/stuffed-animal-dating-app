@@ -2,6 +2,7 @@ from pydantic import BaseModel, Field
 from typing import Optional
 from uuid6 import uuid7
 from beanie import Document
+from uuid import UUID
 
 
 class Profile_create(BaseModel):
@@ -14,7 +15,7 @@ class Profile_create(BaseModel):
 
 
 class Profile(Document, Profile_create):
-    profileGUID: str = Field(uuid7())  # Will generate GUID on creation
+    profileGUID: UUID = Field(uuid7())  # Will generate GUID on creation
     # List of URLs to pictures
     pictures: list[str] = []
     # List of interests (should be changed to a list of Enums later)
