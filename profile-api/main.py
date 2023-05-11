@@ -64,6 +64,18 @@ async def root(Authorize: AuthJWT = Depends()):
     return {"message": f"Hello {current_user}"}
 
 
+@app.get("/profile/{profileGUID}")
+async def get_profile(profileGUID: str):
+    if profileGUID == "all":
+        profiles = await Profile.find_all().to_list()
+        return profiles
+    else:
+        profile = await Profile.find_one({"profileGUID": uuid.UUID(profileGUID)})
+        if profile is None:
+            raise HTTPException(status_code=404, detail="Profile not found")
+        return profile
+
+
 @app.post("/profile")
 async def create_profile(profile: Profile_create):
     if profile.age < 18:
@@ -88,12 +100,24 @@ async def update_profile(
         profile.age = profile_in.age
     if profile_in.bio is not None:
         profile.bio = profile_in.bio
+    if profile_in.pronouns is not None:
+        profile.pronouns = profile_in.pronouns
     if profile_in.pictures is not None:
         profile.pictures = profile_in.pictures
     if profile_in.interests is not None:
-        profile.interests = profile_in.interests
+        try:
+            profile.interests = profile_in.interests
+        except:
+            raise HTTPException(
+                status_code=400, detail="Interests contains invalid data"
+            )
     if profile_in.lookingFor is not None:
-        profile.lookingFor = profile_in.lookingFor
+        try:
+            profile.lookingFor = profile_in.lookingFor
+        except:
+            raise HTTPException(
+                status_code=400, detail="LookingFor contains invalid data"
+            )
     if profile_in.matches is not None:
         profile.matches = profile_in.matches
     if profile_in.likes is not None:

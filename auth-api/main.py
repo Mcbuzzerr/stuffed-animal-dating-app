@@ -82,6 +82,36 @@ async def root(Authorize: AuthJWT = Depends()):
 # The profile api is essentially running blind without a way to get user info from the JWT token
 # I would have to make a request to the auth api to get the user info from the JWT token
 # I may implement this later, but for now I am going to leave it out
+@app.get("/user/{user_authGUID_or_email}", status_code=200)
+async def get_user(user_authGUID_or_email: str, Authorize: AuthJWT = Depends()):
+    Authorize.jwt_required()
+    current_user = Authorize.get_jwt_subject()
+    if current_user != user_authGUID_or_email:
+        raise HTTPException(
+            status_code=403, detail="You do not have permission to access this resource"
+        )
+    with app.engine.connect() as conn:
+        if "@" in user_authGUID_or_email:
+            results = conn.execute(
+                text("SELECT * FROM UserAuth WHERE email = :email"),
+                {"email": user_authGUID_or_email},
+            ).one_or_none()
+        else:
+            results = conn.execute(
+                text("SELECT * FROM UserAuth WHERE user_authGUID = :user_authGUID"),
+                {"user_authGUID": user_authGUID_or_email},
+            ).one_or_none()
+        if results is None:
+            raise HTTPException(status_code=404, detail="User not found")
+        else:
+            return {
+                "user": {
+                    "user_authGUID": results.user_authGUID,
+                    "email": results.email,
+                    "profileGUID": results.profileGUID,
+                    "isAdmin": results.isAdmin,
+                }
+            }
 
 
 @app.post("/register", status_code=201)
