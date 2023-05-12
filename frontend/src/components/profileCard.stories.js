@@ -1,11 +1,11 @@
 import React from 'react';
 
-import { StoryFn } from '@storybook/react';
+// import { StoryFn } from '@storybook/react';
 
 import { ProfileCard } from './profileCard';
 
 export default {
-    title: 'ProfileCard',
+    title: 'Components/ProfileCard',
     component: ProfileCard,
 };
 

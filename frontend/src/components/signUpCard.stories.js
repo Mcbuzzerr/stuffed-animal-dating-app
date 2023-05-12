@@ -3,7 +3,7 @@ import React from 'react';
 import { SignUpCard } from './signUpCard';
 
 export default {
-    title: 'SignUpCard',
+    title: 'Components/SignUpCard',
     component: SignUpCard,
 };
 

@@ -64,6 +64,12 @@ async def root(Authorize: AuthJWT = Depends()):
     return {"message": f"Hello {current_user}"}
 
 
+# UPLOAD PROFILE PICTURE ENDPOINT
+# TODO: Implement this
+# Prospective Image Hosts:
+# https://cloudinary.com
+
+
 @app.get("/profile/{profileGUID}")
 async def get_profile(profileGUID: str):
     if profileGUID == "all":
