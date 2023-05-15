@@ -114,7 +114,7 @@ namespace MessageApi
 
     public class Match
     {
-        public ObjectId Id { get; set; } // Optional _id field
+        public ObjectId Id { get; set; }
         public string First { get; set; }
         public string FirstMsg { get; set; }
         public string Second { get; set; }
@@ -123,7 +123,7 @@ namespace MessageApi
     }
     public class Message
     {
-        public ObjectId Id { get; set; } // Optional _id field
+        public ObjectId Id { get; set; }
         public string Sender { get; set; }
         public string Recipient { get; set; }
         public string Text { get; set; }
