@@ -30,10 +30,23 @@ namespace MessageApi
                 message.TimeSent = DateTime.Now.ToString();
             }
 
+            var matchFilter = Builders<Match>.Filter.Where(m =>
+                ((m.First == message.Sender && m.Second == message.Recipient) ||
+                (m.First == message.Recipient && m.Second == message.Sender)) &&
+                !m.Deleted);
+
+            var match = matchesCollection.Find(matchFilter).FirstOrDefault();
+
+            if (match == null)
+            {
+                return NotFound("Match not found or deleted. Cannot send message.");
+            }
+
             messagesCollection.InsertOne(message);
 
             return StatusCode(201);
         }
+
 
         [HttpPost("match")]
         public IActionResult CreateMatch([FromBody] Match match)
