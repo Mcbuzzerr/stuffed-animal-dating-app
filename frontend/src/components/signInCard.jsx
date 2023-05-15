@@ -19,7 +19,7 @@ export const SignInCard = ({ }) => {
             <TextField sx={{ width: "80%", marginBottom: "1rem" }} placeholder="Password" size="small" type="password" />
 
             <Button variant="contained" sx={{ marginBottom: "1rem", width: "80%" }}>Sign In</Button>
-            <Button variant="text" color="secondary">Sign Up</Button>
+            <Button variant="text" color="secondary" href="/sign-up">Sign Up</Button>
 
         </Card>
     </>)

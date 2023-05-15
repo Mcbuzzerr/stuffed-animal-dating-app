@@ -29,7 +29,7 @@ export default function Home() {
           <img src="/images/logo.png" alt="Logo" style={{ width: "200px", height: "200px" }} />
           <Typography variant="h1" style={{ color: "white" }}>Welcome to <span style={{ color: "#0033aa" }}>Stitch</span></Typography>
         </Box>
-        <Typography variant="body1" style={{ color: "white" }}>This isn't the vibe I want the final product to have at all, this is just minimum viable product</Typography>
+        <Typography variant="body1" style={{ color: "white" }}>This isn't the vibe I want the final product to have at all, this is just something I threw together</Typography>
         <Card sx={{
           display: "flex",
           justifyContent: "space-between",
@@ -39,8 +39,8 @@ export default function Home() {
           padding: "0 2rem",
           backgroundColor: "#eaeaea",
         }}>
-          <Button variant="contained" color="primary" href="/signIn" style={{ margin: "20px" }} fullWidth>Sign In</Button>
-          <Button variant="contained" color="primary" href="/signUp" style={{ margin: "20px" }} fullWidth>Sign Up</Button>
+          <Button variant="contained" color="primary" href="/sign-in" style={{ margin: "20px" }} fullWidth>Sign In</Button>
+          <Button variant="contained" color="primary" href="/sign-up" style={{ margin: "20px" }} fullWidth>Sign Up</Button>
         </Card>
       </main>
     </>

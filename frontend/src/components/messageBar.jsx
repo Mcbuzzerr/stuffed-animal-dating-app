@@ -6,8 +6,7 @@ import { display } from "@mui/system";
 
 
 export const MessageBar = ({ matches }) => {
-
-
+    if (!matches) matches = [];
 
     return (
         <Card sx={{
@@ -21,11 +20,12 @@ export const MessageBar = ({ matches }) => {
             justifyContent: "flex-start",
             alignItems: "center",
             overflowY: "auto",
+            textAlign: matches == 0 ? "center" : "left",
         }}>
             <Box sx={{ width: "calc(100% - 2rem)", padding: "1rem", borderBottom: "2px solid #ebebeb", position: "sticky" }}>
                 <Typography variant="h5" color="text.secondary" sx={{ fontWeight: "bold" }}>Messages</Typography>
             </Box>
-            {matches.map((match) => {
+            {matches.length != 0 ? matches.map((match) => {
                 let PreviewMessage = "No messages yet";
 
                 for (let i = 0; i < match.likes.length; i++) {
@@ -59,6 +59,6 @@ export const MessageBar = ({ matches }) => {
                         </Box>
                     </Box>
                 )
-            })}
+            }) : <Typography variant="body2" color="text.secondary" sx={{ fontWeight: "bold", padding: "1rem" }}>No matches yet<br />Time to get matching!</Typography>}
         </Card>)
 }
