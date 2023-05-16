@@ -1,13 +1,8 @@
-import { SignInCard } from "@/components/signInCard"
+import { ProfileEdit } from "@/components/profileEdit";
 import { Avatar, Card, CardContent, CardHeader, Typography, Box, Button } from "@mui/material";
-import { MessageBar } from "@/components/messageBar";
-import { SettingsMenu } from "@/components/SettingsMenu";
-import { ProfileCard } from "@/components/profileCard";
-import { useState } from "react";
-
+import Link from "next/link";
 
 export default function Page() {
-
     const devUser = {
         "name": "Bertrum", //Show
         "age": 27, //Show
@@ -29,17 +24,13 @@ export default function Page() {
         "isHidden": false
     }
 
-
     return (<Box sx={{
         display: "flex",
+        flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
         height: "100vh"
     }}>
-        <MessageBar />
-        <ProfileCard
-            user={devUser}
-        />
-        <SettingsMenu userProfile={devUser} />
+        <ProfileEdit userProfile={devUser} />
     </Box>)
 }

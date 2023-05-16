@@ -6,10 +6,10 @@ import Head from "next/head";
 export const ProfileEdit = ({ userProfile }) => {
     const [name, setName] = useState(userProfile.name)
     const [nameField, setNameField] = useState(name)
-    const [age, setAge] = useState(age)
-    const [ageField, setAgeField] = useState(userProfile.age)
-    const [bio, setBio] = useState(bio)
-    const [bioField, setBioField] = useState(userProfile.bio)
+    const [age, setAge] = useState(userProfile.age)
+    const [ageField, setAgeField] = useState(age)
+    const [bio, setBio] = useState(userProfile.bio)
+    const [bioField, setBioField] = useState(bio)
     const [pronouns, setPronouns] = useState(userProfile.pronouns)
     const [pronounField, setPronounField] = useState("")
     const [interests, setInterests] = useState(userProfile.interests)
@@ -71,25 +71,23 @@ export const ProfileEdit = ({ userProfile }) => {
             <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-bold-rounded/css/uicons-bold-rounded.css' />
         </Head>
         <Card sx={{
-            width: "300px",
+            width: "400px",
             padding: "1rem",
-            "&>*": {
-                marginTop: "10px"
-            }
         }}>
             <Typography variant="h4">Edit Profile</Typography>
             <Typography variant="h5">Upload Picture(s)</Typography>
             <input type="file" />
-            <TextField size="small" label="Name" fullWidth value={nameField} onChange={handleNameFieldChange} />
-            <TextField size="small" label="Age" type="number" value={ageField} onChange={handleAgeFieldChange} />
-            <TextField size="small" label="Bio" fullWidth multiline minRows={3} value={bioField} onChange={handleBioFieldChange} />
-            <Typography variant="h5">Pronouns</Typography>
+            <TextField size="small" label="Name" fullWidth value={nameField} onChange={handleNameFieldChange} sx={{ marginTop: "10px" }} />
+            <TextField size="small" label="Age" type="number" value={ageField} onChange={handleAgeFieldChange} sx={{ marginTop: "10px" }} />
+            <TextField size="small" label="Bio" fullWidth multiline minRows={3} value={bioField} onChange={handleBioFieldChange} sx={{ marginTop: "10px" }} />
+            <Typography variant="h5" sx={{ marginTop: "10px" }}>Pronouns</Typography>
             {/* Do a map of pronouns */}
             <Box sx={{
                 display: "inline-flex",
                 flexDirection: "row",
                 flexWrap: "wrap",
-                gap: "10px"
+                gap: "10px",
+                marginTop: "10px"
             }}>
                 {pronouns.map((pronoun) => (
                     <Typography variant="body1"
@@ -99,20 +97,21 @@ export const ProfileEdit = ({ userProfile }) => {
                             padding: "0 3px",
                             borderRadius: "5px",
                             backgroundColor: "#fbfbfb",
-                            userSelect: "none"
+                            userSelect: "none",
                         }}
                     >{pronoun} <span style={{ fontWeight: "bold", color: "red" }}>X</span></Typography>
                 ))}
             </Box>
-            <TextField label="Pronoun" onChange={handlePronounFieldChange} value={pronounField} fullWidth />
+            <TextField label="Pronoun" onChange={handlePronounFieldChange} value={pronounField} fullWidth sx={{ marginTop: "10px" }} />
             <Button variant="contained" onClick={handleAddPronoun} color="secondary" sx={{ marginTop: "10px" }}>Add Pronoun</Button>
-            <Typography variant="h5">Interests</Typography>
+            <Typography variant="h5" sx={{ marginTop: "10px" }}>Your Interests</Typography>
             {/* Do a map of interests */}
             <Box sx={{
                 display: "inline-flex",
                 flexDirection: "row",
                 flexWrap: "wrap",
-                gap: "10px"
+                gap: "10px",
+                marginTop: "10px"
             }}>
                 {interests.map((interest) => (
                     <Typography variant="body1"
@@ -128,8 +127,10 @@ export const ProfileEdit = ({ userProfile }) => {
                 ))}
             </Box>
             {/* Do a map of all available interests, maybe only show a certain amount with a show more button */}
-            <p>LIST OF INTERESTS GO HERE</p>
-            <Button variant="contained" onClick={handleSubmit}>Save Profile</Button>
+            <Typography variant="h5" sx={{ marginTop: "10px" }}>Available Interests</Typography>
+            <p>LIST OF ALL AVAILABLE INTERESTS GO HERE</p>
+            <Button variant="contained" onClick={handleSubmit} sx={{ marginTop: "10px" }}>Save Profile</Button>
+            <Button variant="text" color="secondary" sx={{ marginTop: "10px", marginLeft: "1rem" }} href="main">Cancel</Button>
         </Card>
     </>
     )

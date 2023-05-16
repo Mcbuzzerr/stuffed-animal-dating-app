@@ -1,14 +1,16 @@
-import { SignInCard } from "@/components/signInCard"
-import { Avatar, Card, CardContent, CardHeader, Typography, Box, Button } from "@mui/material";
-import { MessageBar } from "@/components/messageBar";
-import { SettingsMenu } from "@/components/SettingsMenu";
-import { ProfileCard } from "@/components/profileCard";
-import { useState } from "react";
+import React from "react";
 
+import { SettingsMenu } from "./SettingsMenu";
 
-export default function Page() {
+export default {
+    title: "Components/SettingsMenu",
+    component: SettingsMenu,
+};
 
-    const devUser = {
+const Template = (args) => <SettingsMenu {...args} />;
+export const Default = Template.bind({});
+Default.args = {
+    userProfile: {
         "name": "Bertrum", //Show
         "age": 27, //Show
         "_id": "645c192153a317484dda15e8",
@@ -28,18 +30,6 @@ export default function Page() {
         ],
         "isHidden": false
     }
+};
 
 
-    return (<Box sx={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        height: "100vh"
-    }}>
-        <MessageBar />
-        <ProfileCard
-            user={devUser}
-        />
-        <SettingsMenu userProfile={devUser} />
-    </Box>)
-}

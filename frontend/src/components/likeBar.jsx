@@ -38,7 +38,6 @@ export const LikeBar = ({ isDisabled, profileID }) => {
                         cursor: isDisabled ? "default" : "pointer",
                         color: isDisabled ? "#a0a0a0" : "#13cb71",
                         backgroundColor: isDisabled ? "#ebebeb" : "#c5c5c5",
-
                     },
                     "&:active": {
                         color: isDisabled ? "#a0a0a0" : "#02ba60",
