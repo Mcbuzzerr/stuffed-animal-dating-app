@@ -5,9 +5,12 @@ import Head from "next/head";
 
 export const SettingsMenu = ({ userProfile }) => {
     const [expanded, setExpanded] = useState(false);
-    const [ageRange, setAgeRange] = useState(userProfile ? userProfile.agePrefs : [18, 60]);
-    const [doNotifs, setDoNotifs] = useState(userProfile ? userProfile.doNotifs : true);
-    const [isHidden, setIsHidden] = useState(userProfile ? userProfile.isHidden : true);
+    if (userProfile.agePrefs.length == 0) {
+        userProfile.agePrefs = [0, 60];
+    }
+    const [ageRange, setAgeRange] = useState(userProfile.agePrefs);
+    const [doNotifs, setDoNotifs] = useState(userProfile != null ? userProfile.doNotifs : true);
+    const [isHidden, setIsHidden] = useState((userProfile != null ? userProfile.isHidden : true));
 
     const handleExpandClick = () => {
         setExpanded(!expanded);

@@ -79,3 +79,10 @@ services:
     container_name: sada-eureka
     ports:
       - "8761:8761"
+  gateway:
+    container_name: ocelot-gateway
+    build: ./dotnet-apigateway-ocelot
+    ports:
+      - "5041:80"
+    depends_on:
+      - eureka

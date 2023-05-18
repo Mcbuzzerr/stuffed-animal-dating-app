@@ -5,7 +5,7 @@ import Head from "next/head";
 import { LikeBar } from "./likeBar";
 
 
-export const ProfileCard = ({ user }) => {
+export const ProfileCard = ({ user, preview }) => {
     const [scrollPosition, setScrollPosition] = useState(0);
     const interestsRef = React.createRef()
     const [interestsWidth, setInterestsWidth] = useState(0);
@@ -43,7 +43,7 @@ export const ProfileCard = ({ user }) => {
 
     React.useEffect(() => {
         setInterestsWidth(interestsRef.current.scrollWidth - interestsRef.current.clientWidth)
-    }, [])
+    }, [user])
 
     return (<>
         <Head>
@@ -55,18 +55,24 @@ export const ProfileCard = ({ user }) => {
             flexDirection: "row",
             gap: "1rem",
         }}>
-            <Box sx={{
-                backgroundColor: "#f52323",
-                width: "100px",
-                height: "100px",
-                borderRadius: "50%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "5rem"
-            }}>
-                &lt;
-            </Box>
+            {!preview && (
+                <Box sx={{
+                    backgroundColor: "#f52323",
+                    width: "100px",
+                    height: "100px",
+                    borderRadius: "50%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "5rem",
+                    "&:hover": {
+                        cursor: "pointer",
+                        backgroundColor: "#c30e0e",
+                    }
+                }}>
+                    <i className="fi fi-br-caret-left" style={{ height: "80px" }}></i>
+                </Box>
+            )}
             <Box sx={{
                 display: "flex",
                 alignItems: "center",
@@ -122,13 +128,13 @@ export const ProfileCard = ({ user }) => {
                                     fontSize: "5rem",
                                     color: "black",
                                     marginLeft: "-1rem"
-                                }}><i class="fi fi-br-caret-left"></i></Box> : <Box></Box>) : <></>}
+                                }}><i className="fi fi-br-caret-left"></i></Box> : <Box></Box>) : <></>}
                             {user ? (
                                 pictureIndex < user.pictures.length - 1 ? <Box onClick={() => handleChangePicture(1)} sx={{
                                     fontSize: "5rem",
                                     color: "black",
                                     marginRight: "-1rem"
-                                }}><i class="fi fi-br-caret-right"></i></Box> : <Box></Box>) : <></>}
+                                }}><i className="fi fi-br-caret-right"></i></Box> : <Box></Box>) : <></>}
                         </Box>
                         <Typography variant="h5" sx={{ zIndex: 2 }}>{user ? (user.name + ", " + user.age) : "User not found"}</Typography>
                         <Typography variant="body2" sx={{ zIndex: 2 }}>{user ? user.bio : "User not found loves long walks on the beach and their favorite hobbie of doing nothing"}</Typography>
@@ -181,7 +187,9 @@ export const ProfileCard = ({ user }) => {
                                         padding: "0 3px",
                                         borderRadius: "5px",
                                         backgroundColor: "#fbfbfb",
-                                        userSelect: "none"
+                                        userSelect: "none",
+                                        height: "26px",
+                                        whiteSpace: "nowrap"
                                     }}>{interest}</Typography>
                                 )) : (<>
                                     <Typography variant="body1" sx={{
@@ -211,13 +219,13 @@ export const ProfileCard = ({ user }) => {
                                     left: "-5px",
                                     top: "-3px",
                                     fontSize: "2rem"
-                                }}><i class="fi fi-br-caret-left"></i></Box>}
+                                }}><i className="fi fi-br-caret-left"></i></Box>}
                                 {scrollPosition < interestsWidth && <Box onClick={() => handleScroll(100)} sx={{
                                     position: "absolute",
                                     right: "-5px",
                                     top: "-3px",
                                     fontSize: "2rem"
-                                }}><i class="fi fi-br-caret-right"></i></Box>}
+                                }}><i className="fi fi-br-caret-right"></i></Box>}
                             </Box>
                         </Box>
                         <Typography variant="body1" sx={{
@@ -235,20 +243,26 @@ export const ProfileCard = ({ user }) => {
 
                     </Box>
                 </Card >
-                <LikeBar profileID={user ? user.profileGUID : null} isDisabled={user ? false : true} />
+                {!preview && <LikeBar profileID={user ? user.profileGUID : null} isDisabled={user ? false : true} />}
             </Box>
-            <Box sx={{
-                backgroundColor: "#f52323",
-                width: "100px",
-                height: "100px",
-                borderRadius: "50%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "5rem"
-            }}>
-                &gt;
-            </Box>
+            {!preview && (
+                <Box sx={{
+                    backgroundColor: "#f52323",
+                    width: "100px",
+                    height: "100px",
+                    borderRadius: "50%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "5rem",
+                    "&:hover": {
+                        cursor: "pointer",
+                        backgroundColor: "#c30e0e",
+                    }
+                }}>
+                    <i className="fi fi-br-caret-right" style={{ height: "80px" }}></i>
+                </Box>
+            )}
         </Box>
     </>);
 }

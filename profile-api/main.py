@@ -8,7 +8,15 @@ from fastapi_jwt_auth import AuthJWT
 from fastapi_jwt_auth.exceptions import AuthJWTException
 import py_eureka_client.eureka_client as eureka_client
 from contextlib import asynccontextmanager
-from models.profile_models import Profile, Profile_create, Like, Like_in
+from models.profile_models import (
+    Profile,
+    Profile_create,
+    Like,
+    Like_in,
+    Interests,
+    Looking_for,
+)
+from itertools import islice
 import uuid
 
 
@@ -23,7 +31,7 @@ async def startup(app: FastAPI):
 
     await eureka_client.init_async(
         eureka_server="http://eureka:8761/eureka",
-        app_name="user-api",
+        app_name="profile-api",
         instance_port=8000,
     )
 
@@ -70,7 +78,7 @@ async def root(Authorize: AuthJWT = Depends()):
 # https://cloudinary.com
 
 
-@app.get("/profile/{profileGUID}")
+@app.get("/{profileGUID}")
 async def get_profile(profileGUID: str):
     if profileGUID == "all":
         profiles = await Profile.find_all().to_list()
@@ -82,7 +90,7 @@ async def get_profile(profileGUID: str):
         return profile
 
 
-@app.post("/profile")
+@app.post("/create")
 async def create_profile(profile: Profile_create):
     if profile.age < 18:
         raise HTTPException(status_code=400, detail="User must be 18 or older")
@@ -91,7 +99,7 @@ async def create_profile(profile: Profile_create):
     return new_profile.profileGUID
 
 
-@app.patch("/profile/{profileGUID}")
+@app.patch("/{profileGUID}")
 async def update_profile(
     profileGUID: str, profile_in: Profile, Authorize: AuthJWT = Depends()
 ):
@@ -141,7 +149,7 @@ async def update_profile(
     return {"message": "Profile updated"}
 
 
-@app.delete("/profile/{profileGUID}")
+@app.delete("/{profileGUID}")
 async def delete_profile(profileGUID: str, Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
     await Profile.find_one({"profileGUID": uuid.UUID(profileGUID)}).delete()
@@ -207,7 +215,7 @@ async def dislike_profile(
     return {"message": "Profile disliked"}
 
 
-@app.get("/profile/{profileGUID}/get_batch/{count}")
+@app.get("/{profileGUID}/get_batch/{count}")
 async def get_profiles(profileGUID: str, count: int, Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
 
@@ -298,7 +306,7 @@ async def get_profiles(profileGUID: str, count: int, Authorize: AuthJWT = Depend
     # then if there are still more than count, return count, otherwise grab more and repeat
 
 
-@app.get("/profile/{profileGUID}/get_matches")
+@app.get("/{profileGUID}/get_matches")
 async def get_matches(profileGUID: str, Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
 
@@ -316,3 +324,21 @@ async def get_matches(profileGUID: str, Authorize: AuthJWT = Depends()):
     # Get logged in user
     # Get list of matches
     # Return list of matches
+
+
+@app.get("/enum/interests")
+async def get_interests():
+    interests_out = []
+    for index in Interests:
+        if index != Interests.None_:
+            interests_out += index.split(".")
+    return {"interests": interests_out}
+
+
+@app.get("/enum/lookingFor")
+async def get_lookingFor():
+    lookingFor_out = []
+    for index in Looking_for:
+        if index != Looking_for.None_:
+            lookingFor_out += index.split(".")
+    return {"lookingFor": lookingFor_out}

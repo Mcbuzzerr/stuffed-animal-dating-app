@@ -4,8 +4,21 @@ import { Avatar, Card, CardContent, CardHeader, Typography, Box, Button, TextFie
 import Head from "next/head";
 
 export const LikeBar = ({ isDisabled, profileID }) => {
+    const [message, setMessage] = useState("");
+    const [likeDisabled, setLikeDisabled] = useState(true);
+
+    const handleMessageChange = (e) => {
+        setMessage(e.target.value);
+        if (e.target.value != 0 && isDisabled == false) {
+            setLikeDisabled(false);
+        } else if (e.target.value == 0) {
+            setLikeDisabled(true);
+        }
+    }
+
     const handleLike = () => {
-        console.log("liked " + profileID)
+        if (likeDisabled == true) return;
+        console.log("liked " + profileID + " with message: " + message);
     }
 
     return (<Box sx={{ textAlign: "center", marginTop: "1rem" }}>
@@ -17,7 +30,7 @@ export const LikeBar = ({ isDisabled, profileID }) => {
             display: "flex",
             alignItems: "center",
         }}>
-            <TextField size="small" placeholder={isDisabled ? 'Come back tomorrow!' : "Your message here"} disabled={isDisabled} sx={{ backgroundColor: "white", borderRadius: "5px" }} />
+            <TextField size="small" placeholder={isDisabled ? 'Come back tomorrow!' : "Your message here"} disabled={isDisabled} sx={{ backgroundColor: "white", borderRadius: "5px" }} onChange={handleMessageChange} />
             <Box
                 onClick={handleLike}
                 sx={{
@@ -33,18 +46,18 @@ export const LikeBar = ({ isDisabled, profileID }) => {
                     alignItems: "center",
                     fontSize: "1.5rem",
                     lineHeight: "24px",
-                    color: isDisabled ? "#a0a0a0" : "#3ded97",
+                    color: likeDisabled ? "#a0a0a0" : "#3ded97",
                     "&:hover": {
-                        cursor: isDisabled ? "default" : "pointer",
-                        color: isDisabled ? "#a0a0a0" : "#13cb71",
-                        backgroundColor: isDisabled ? "#ebebeb" : "#c5c5c5",
+                        cursor: likeDisabled ? "default" : "pointer",
+                        color: likeDisabled ? "#a0a0a0" : "#13cb71",
+                        backgroundColor: likeDisabled ? "#ebebeb" : "#c5c5c5",
                     },
                     "&:active": {
-                        color: isDisabled ? "#a0a0a0" : "#02ba60",
-                        backgroundColor: isDisabled ? "#ebebeb" : "#b4b4b4",
+                        color: likeDisabled ? "#a0a0a0" : "#02ba60",
+                        backgroundColor: likeDisabled ? "#ebebeb" : "#b4b4b4",
                     }
                 }}>
-                <i class="fi fi-ss-heart" style={{ height: "24px" }}></i>
+                <i className="fi fi-ss-heart" style={{ height: "24px" }}></i>
             </Box>
         </Box>
     </Box>)

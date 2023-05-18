@@ -4,6 +4,10 @@ import { Avatar, Card, CardContent, CardHeader, Typography, Box, Button, TextFie
 
 
 export const SignUpCard = ({ }) => {
+    const handleSignUp = () => {
+
+    }
+
     return (<>
         <Card sx={{
             width: "300px",
