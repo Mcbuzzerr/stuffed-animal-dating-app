@@ -5,10 +5,15 @@ import Head from "next/head";
 import { LikeBar } from "./likeBar";
 
 
-export const ProfileCard = ({ user, preview }) => {
+export const ProfileCard = ({ user, preview, queuePosition, setQueuePosition, matches, setMatches }) => {
     const [scrollPosition, setScrollPosition] = useState(0);
-    const interestsRef = React.createRef()
+    const interestsRef = React.createRef();
     const [interestsWidth, setInterestsWidth] = useState(0);
+
+    const [pronounsScrollPosition, setPronounsScrollPosition] = useState(0);
+    const pronounsRef = React.createRef();
+    const [pronounsWidth, setPronounsWidth] = useState(0);
+
     const [pictureIndex, setPictureIndex] = useState(0);
 
     const handleScroll = (scrollAmount) => {
@@ -30,6 +35,25 @@ export const ProfileCard = ({ user, preview }) => {
         setScrollPosition(newPosition);
     }
 
+    const handlePronounsScroll = (scrollAmount) => {
+        const container = pronounsRef.current;
+        let newPosition = container.scrollLeft + scrollAmount;
+
+        if (newPosition < 0) {
+            newPosition = 0;
+        }
+
+        if (newPosition > container.scrollWidth) {
+            newPosition = container.scrollWidth;
+        }
+
+        container.scroll({
+            left: newPosition,
+            behavior: 'smooth'
+        });
+        setPronounsScrollPosition(newPosition);
+    }
+
     const handleChangePicture = (indexChange) => {
         let newIndex = pictureIndex + indexChange;
         if (newIndex < 0) {
@@ -41,8 +65,27 @@ export const ProfileCard = ({ user, preview }) => {
         setPictureIndex(newIndex);
     }
 
+    const handleDislike = async () => {
+        const profileGUID = JSON.parse(localStorage.getItem("user")).profileGUID;
+        await fetch(`http://localhost:5041/profile/dislike/${profileGUID}/to/${user.profileGUID}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${localStorage.getItem("token")}`
+            }
+        }).then(response => {
+            if (response.status == 200) {
+                setQueuePosition(queuePosition + 1);
+            } else {
+                console.log(response.json());
+            }
+        })
+
+    }
+
     React.useEffect(() => {
-        setInterestsWidth(interestsRef.current.scrollWidth - interestsRef.current.clientWidth)
+        setInterestsWidth(interestsRef.current.scrollWidth - interestsRef.current.clientWidth);
+        setPronounsWidth(pronounsRef.current.scrollWidth - pronounsRef.current.clientWidth);
     }, [user])
 
     return (<>
@@ -69,7 +112,7 @@ export const ProfileCard = ({ user, preview }) => {
                         cursor: "pointer",
                         backgroundColor: "#c30e0e",
                     }
-                }}>
+                }} onClick={handleDislike}>
                     <i className="fi fi-br-caret-left" style={{ height: "80px" }}></i>
                 </Box>
             )}
@@ -140,37 +183,85 @@ export const ProfileCard = ({ user, preview }) => {
                         <Typography variant="body2" sx={{ zIndex: 2 }}>{user ? user.bio : "User not found loves long walks on the beach and their favorite hobbie of doing nothing"}</Typography>
                     </Box>
                     <Box sx={{ padding: 1 }}>
-                        <Typography variant="body1" sx={{ fontWeight: "bold", display: "inline" }}>Pronouns: </Typography>
-                        <Box sx={{
-                            display: "inline-flex",
-                            flexDirection: "row",
-                            gap: "10px"
-                        }}>
-                            {user ? user.pronouns.map((pronoun) => (
-                                <Typography variant="body1" sx={{
-                                    border: "solid 1px #bbb",
-                                    padding: "0 3px",
-                                    borderRadius: "5px",
-                                    backgroundColor: "#fbfbfb",
-                                    userSelect: "none"
-                                }}>{pronoun}</Typography>
-                            )) : (<>
-                                <Typography variant="body1" sx={{
-                                    border: "solid 1px #bbb",
-                                    padding: "0 3px",
-                                    borderRadius: "5px",
-                                    backgroundColor: "#fbfbfb",
-                                    userSelect: "none"
-                                }}>not</Typography>
-                                <Typography variant="body1" sx={{
-                                    border: "solid 1px #bbb",
-                                    padding: "0 3px",
-                                    borderRadius: "5px",
-                                    backgroundColor: "#fbfbfb",
-                                    userSelect: "none"
-                                }}>found</Typography>
-                            </>)}
+
+
+                        <Box sx={{ display: "block" }}>
+                            <Typography variant="body1" sx={{
+                                fontWeight: "bold",
+                                display: "inline"
+                            }}>Looking for: </Typography>
+                            <Typography variant="body2" sx={{
+                                border: "solid 1px #bbb",
+                                padding: "0 3px",
+                                borderRadius: "5px",
+                                backgroundColor: "#fbfbfb",
+                                userSelect: "none",
+                                display: "inline-block"
+                            }}>{user ? user.lookingFor : "Nobody"}</Typography>
                         </Box>
+
+
+                        <Typography variant="body1" sx={{ fontWeight: "bold", display: "inline" }}>Pronouns: </Typography>
+                        <Box sx={{ position: "relative", margin: "5px 0" }}>
+                            <Box sx={{
+                                display: "flex",
+                                flexDirection: "row",
+                                width: "100%",
+                                gap: "10px",
+                                overflowX: "hidden",
+                                overflowY: "hidden"
+                            }} ref={pronounsRef}>
+                                {user ? user.pronouns.map((pronoun) => (
+                                    <Typography variant="body1" sx={{
+                                        border: "solid 1px #bbb",
+                                        padding: "0 3px",
+                                        borderRadius: "5px",
+                                        backgroundColor: "#fbfbfb",
+                                        userSelect: "none",
+                                        height: "26px",
+                                        whiteSpace: "nowrap"
+                                    }}>{pronoun}</Typography>
+                                )) : (<>
+                                    <Typography variant="body1" sx={{
+                                        border: "solid 1px #bbb",
+                                        padding: "0 3px",
+                                        borderRadius: "5px",
+                                        backgroundColor: "#fbfbfb",
+                                        userSelect: "none"
+                                    }}>not</Typography>
+                                    <Typography variant="body1" sx={{
+                                        border: "solid 1px #bbb",
+                                        padding: "0 3px",
+                                        borderRadius: "5px",
+                                        backgroundColor: "#fbfbfb",
+                                        userSelect: "none"
+                                    }}>found</Typography>
+                                </>)}
+                            </Box>
+                            <Box sx={{
+                                position: "absolute",
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                bottom: 0
+                            }}>
+                                {pronounsScrollPosition > 0 && <Box onClick={() => handlePronounsScroll(-100)} sx={{
+                                    position: "absolute",
+                                    left: "-5px",
+                                    top: "-3px",
+                                    fontSize: "2rem"
+                                }}><i className="fi fi-br-caret-left"></i></Box>}
+                                {pronounsScrollPosition < pronounsWidth && <Box onClick={() => handlePronounsScroll(100)} sx={{
+                                    position: "absolute",
+                                    right: "-5px",
+                                    top: "-3px",
+                                    fontSize: "2rem"
+                                }}><i className="fi fi-br-caret-right"></i></Box>}
+                            </Box>
+                        </Box>
+
+
+
                         <Typography variant="body1" sx={{ fontWeight: "bold", display: "block" }}>Interests: </Typography>
                         <Box sx={{ position: "relative", margin: "5px 0" }}>
                             <Box sx={{
@@ -228,22 +319,9 @@ export const ProfileCard = ({ user, preview }) => {
                                 }}><i className="fi fi-br-caret-right"></i></Box>}
                             </Box>
                         </Box>
-                        <Typography variant="body1" sx={{
-                            fontWeight: "bold",
-                            display: "inline"
-                        }}>Looking for: </Typography>
-                        <Typography variant="body2" sx={{
-                            border: "solid 1px #bbb",
-                            padding: "0 3px",
-                            borderRadius: "5px",
-                            backgroundColor: "#fbfbfb",
-                            userSelect: "none",
-                            display: "inline-block"
-                        }}>{user ? user.lookingFor : "Nobody"}</Typography>
-
                     </Box>
                 </Card >
-                {!preview && <LikeBar profileID={user ? user.profileGUID : null} isDisabled={user ? false : true} />}
+                {!preview && <LikeBar profile={user ? user : null} isDisabled={user ? false : true} queuePosition={queuePosition} setQueuePosition={setQueuePosition} matches={matches} setMatches={setMatches} />}
             </Box>
             {!preview && (
                 <Box sx={{
@@ -259,7 +337,7 @@ export const ProfileCard = ({ user, preview }) => {
                         cursor: "pointer",
                         backgroundColor: "#c30e0e",
                     }
-                }}>
+                }} onClick={handleDislike}>
                     <i className="fi fi-br-caret-right" style={{ height: "80px" }}></i>
                 </Box>
             )}

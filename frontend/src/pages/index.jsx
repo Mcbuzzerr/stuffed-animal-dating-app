@@ -4,6 +4,10 @@ import { css } from '@emotion/react'
 import { Avatar, Card, CardContent, CardHeader, Typography, Box, Button } from "@mui/material";
 
 export default function Home() {
+  if (localStorage.getItem("token") != null) {
+    window.location.href = "/main";
+  }
+
   return (
     <>
       <Head>

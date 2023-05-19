@@ -13,6 +13,7 @@ export const SettingsMenu = ({ userProfile }) => {
     const [isHidden, setIsHidden] = useState((userProfile != null ? userProfile.isHidden : true));
 
     const handleExpandClick = () => {
+        console.log(userProfile);
         setExpanded(!expanded);
     };
 
@@ -28,6 +29,12 @@ export const SettingsMenu = ({ userProfile }) => {
         setIsHidden(event.target.checked);
     };
 
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        localStorage.removeItem("profile");
+        window.location.href = "/sign-in";
+    }
 
     return (
         <Card sx={{
@@ -35,12 +42,16 @@ export const SettingsMenu = ({ userProfile }) => {
             top: 0,
             right: 0,
             botttom: 0,
-            width: "400px",
+            width: "500px",
             display: "flex",
             flexDirection: "column",
             justifyContent: "flex-start",
             alignItems: "center",
             overflowY: "auto",
+            borderTopLeftRadius: 0,
+            borderBottomLeftRadius: 0,
+            boxShadow: "none",
+            zIndex: 3,
         }}>
             <Box sx={{
                 padding: "1rem",
@@ -56,6 +67,7 @@ export const SettingsMenu = ({ userProfile }) => {
                 ) : <Box sx={{ width: 56, height: 56, display: "inline-block", borderRadius: "50%", marginRight: "1rem", backgroundColor: "grey" }}> </Box>}
                 <Typography variant="h5" color="text.secondary" sx={{ fontWeight: "bold" }}>{userProfile ? userProfile.name : "User Not Found"}</Typography>
                 <Button variant="contained" color="primary" sx={{ width: "100px" }} onClick={handleExpandClick}>{expanded ? "Save" : "Settings"}</Button>
+                <Button variant="contained" onClick={handleLogout}>Log Out</Button>
             </Box>
             {expanded ? (
                 <Box sx={{

@@ -165,7 +165,7 @@ export const ProfileEdit = ({ userProfile, setUserProfileFunction }) => {
             agePrefs: userProfile.agePrefs,
             isHidden: userProfile.isHidden,
         }
-        const profileGUID = JSON.parse(localStorage.getItem("profile")).profileGUID;
+        const profileGUID = JSON.parse(localStorage.getItem("user")).profileGUID;
         let response = await fetch(`http://localhost:5041/profile/${profileGUID}`, {
             method: "PATCH",
             headers: {

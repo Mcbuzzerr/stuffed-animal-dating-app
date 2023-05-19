@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 // import common tags from material ui
-import { Avatar, Card, CardContent, CardHeader, Typography, Box, Button, TextField } from "@mui/material";
+import { Avatar, Card, CardContent, CardHeader, Typography, Box, Button, TextField, Modal } from "@mui/material";
 import Head from "next/head";
 
-export const LikeBar = ({ isDisabled, profileID }) => {
+export const LikeBar = ({ isDisabled, profile, queuePosition, setQueuePosition, matches, setMatches }) => {
     const [message, setMessage] = useState("");
     const [likeDisabled, setLikeDisabled] = useState(true);
+    const [matchPopup, setMatchPopup] = useState(false);
 
     const handleMessageChange = (e) => {
         setMessage(e.target.value);
@@ -16,9 +17,36 @@ export const LikeBar = ({ isDisabled, profileID }) => {
         }
     }
 
-    const handleLike = () => {
+    const handleLike = async () => {
         if (likeDisabled == true) return;
-        console.log("liked " + profileID + " with message: " + message);
+        console.log("liked " + profile.profileGUID + " with message: " + message);
+        const profileGUID = JSON.parse(localStorage.getItem("user")).profileGUID;
+        let response = await fetch(`http://localhost:5041/profile/like/${profileGUID}/to/${profile.profileGUID}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${localStorage.getItem("token")}`
+            },
+            body: JSON.stringify({
+                message: message
+            })
+        }).then(response => {
+            if (response.status == 200) {
+                setQueuePosition(queuePosition + 1);
+            } else {
+                console.log(response.json());
+            }
+            return response;
+        }).then(data => data.json());
+        console.log(response);
+        if (response.message == "Match!") {
+            console.log("matched!");
+            setMatches([...matches, profile]);
+            setMatchPopup(true);
+        }
+        setMessage("");
+        setLikeDisabled(true);
+        setQueuePosition(queuePosition + 1);
     }
 
     return (<Box sx={{ textAlign: "center", marginTop: "1rem" }}>
@@ -30,7 +58,19 @@ export const LikeBar = ({ isDisabled, profileID }) => {
             display: "flex",
             alignItems: "center",
         }}>
-            <TextField size="small" placeholder={isDisabled ? 'Come back tomorrow!' : "Your message here"} disabled={isDisabled} sx={{ backgroundColor: "white", borderRadius: "5px" }} onChange={handleMessageChange} />
+            {
+                matchPopup && <Modal open={matchPopup} onClose={() => setMatchPopup(false)} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
+                    <Card sx={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: "300px", height: "300px", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
+                        <CardContent>
+                            <Typography variant="h5" component="div" sx={{ textAlign: "center" }}>
+                                You matched!
+                            </Typography>
+                        </CardContent>
+                        <Button onClick={() => setMatchPopup(false)}>Close</Button>
+                    </Card>
+                </Modal>
+            }
+            <TextField size="small" placeholder={isDisabled ? 'Come back tomorrow!' : "Your message here"} disabled={isDisabled} sx={{ backgroundColor: "white", borderRadius: "5px" }} onChange={handleMessageChange} value={message} />
             <Box
                 onClick={handleLike}
                 sx={{
