@@ -90,7 +90,7 @@ export const SettingsMenu = ({ userProfile }) => {
                     </FormGroup>
                     <Typography variant="h5" sx={{ fontWeight: "bold" }}>Account</Typography>
                     <Button>Update Email or Password</Button>
-                    <Button color="error" variant="contained">Delete Account</Button>
+                    <Button color="error" variant="contained" sx={{ marginLeft: "1rem" }}>Delete Account</Button>
 
 
                 </Box>) : null}
