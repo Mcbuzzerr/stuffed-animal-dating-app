@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
@@ -13,14 +14,17 @@ namespace MessageApi
         private readonly IMongoCollection<Match> matchesCollection;
         private readonly IMongoCollection<Message> messagesCollection;
 
-        public MessagingController(IMongoDatabase database)
+        private readonly IHubContext<SignalHub> _hubContext;
+
+        public MessagingController(IMongoDatabase database, IHubContext<SignalHub> hubContext)
         {
             matchesCollection = database.GetCollection<Match>("matches");
             messagesCollection = database.GetCollection<Message>("messages");
+            _hubContext = hubContext;
         }
 
         [HttpPost("send")]
-        public IActionResult SendMessage([FromBody] Message message)
+        public async Task<IActionResult> SendMessage([FromBody] Message message)
         {
             // Perform validation if needed
 
@@ -44,9 +48,23 @@ namespace MessageApi
 
             messagesCollection.InsertOne(message);
 
+            // Get the group name for the sender and recipient
+            var groupName = GetMatchGroupName(message.Sender, message.Recipient);
+
+            // Broadcast the message asynchronously to the group
+            await _hubContext.Clients.Group(groupName).SendAsync("ReceiveMessage", message);
+
             return StatusCode(201);
         }
 
+
+        private string GetMatchGroupName(string sender, string recipient)
+        {
+            // Generate a unique group name based on sender and recipient IDs
+            List<string> groupMembers = new List<string> { sender, recipient };
+            groupMembers.Sort(); // Sort the member names to ensure consistency
+            return string.Join("_", groupMembers);
+        }
 
         [HttpPost("match")]
         public IActionResult CreateMatch([FromBody] Match match)

@@ -1,0 +1,92 @@
+$(document).ready(function() {
+    const apiUrl = 'https://localhost:7174/api';
+  
+    function sendMessage(sender, recipient, text) {
+      const message = {
+        Sender: sender,
+        Recipient: recipient,
+        Text: text
+      };
+  
+      $.ajax({
+        url: `${apiUrl}/send`,
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(message),
+        success: function() {
+          console.log('Message sent:', message);
+        },
+        error: function(error) {
+          console.error('Error sending message:', error);
+        }
+      });
+    }
+  
+    function retrieveMessages(sender, recipient) {
+        $.ajax({
+          url: `${apiUrl}/retrieve?sender=${sender}&receiver=${recipient}`,
+          type: 'GET',
+          success: function(data) {
+            console.log('Retrieved data:', data);
+            
+            if (Array.isArray(data.messages)) {
+              data.messages.reverse().forEach(function(message) {
+                if (message.sender === sender && message.recipient === recipient) {
+                    $(`#${recipient}-messages`).append('<div><strong>' + message.sender + ':</strong> ' + message.text + '</div>');
+                } else if (message.sender === recipient && message.recipient === sender) {
+                    $(`#${sender}-messages`).append('<div><strong>' + message.sender + ':</strong> ' + message.text + '</div>');
+                }
+              });
+            }
+          },
+          error: function(error) {
+            console.error('Error retrieving messages:', error);
+          }
+        });
+    }
+         
+  
+    // Example usage
+    const user1 = 'user1';
+    const user2 = 'user2';
+  
+    $('#user1-send-btn').on('click', function() {
+      const text = $('#user1-input').val();
+      sendMessage(user1, user2, text);
+      $('#user1-input').val('');
+    });
+  
+    $('#user2-send-btn').on('click', function() {
+      const text = $('#user2-input').val();
+      sendMessage(user2, user1, text);
+      $('#user2-input').val('');
+    });
+  
+    // Retrieve messages initially
+    retrieveMessages(user1, user2);
+    retrieveMessages(user2, user1);
+  
+    // Set up SignalR connection
+    const connection = new signalR.HubConnectionBuilder()
+      .withUrl('https://localhost:7174/myhub') // Use your HUB URL here
+      .build();
+  
+    connection.start().then(function() {
+      console.log('SignalR connection established.');
+  
+      // Receive message event handler
+    connection.on('ReceiveMessage', function(message) {
+        console.log('Received message:', message);
+    
+        const containerId = (message.sender === user1) ? 'user2-messages' : 'user1-messages';
+        const sender = (message.sender === user1) ? user1 : user2;
+        const recipient = (message.sender === user1) ? user2 : user1;
+    
+        // Prepend the new message in bold
+        $('#' + containerId).prepend('<div><strong>' + sender + ':</strong> ' + message.text + '</div>');
+    });
+    }).catch(function(error) {
+      console.error('Error establishing SignalR connection:', error);
+    });
+  });
+  

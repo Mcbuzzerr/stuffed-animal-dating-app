@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
@@ -13,6 +14,17 @@ namespace MessageApi
     {
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(builder =>
+                {
+                    builder.WithOrigins("http://127.0.0.1:5500")
+                           .AllowAnyMethod()
+                           .AllowAnyHeader()
+                           .AllowCredentials();
+                });
+            });
+
             services.AddControllers();
 
             services.AddSwaggerGen(c =>
@@ -29,6 +41,7 @@ namespace MessageApi
 
             // Register your services
             services.AddScoped<MessagingController>();
+            services.AddSignalR();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -48,9 +61,12 @@ namespace MessageApi
 
             app.UseRouting();
 
+            app.UseCors();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<SignalHub>("/myhub"); // Hub endpoint path
                 endpoints.MapGet("/", async context =>
                 {
                     // Redirect root URL to Swagger UI
