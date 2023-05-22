@@ -16,7 +16,7 @@ export const Default = Template.bind({});
 
 let real_user = {
     "name": "Bertrum", //Show
-    "age": 27,
+    "age": 27, //Show
     "_id": "645c192153a317484dda15e8",
     "profileGUID": "018807c2-2ae8-7df8-921d-fedcc238ccd5",
     "bio": "A really cool guy looking for love in unexpected and expected places", //Show
@@ -38,4 +38,10 @@ let real_user = {
 
 Default.args = {
     user: real_user
+};
+
+export const NoUser = Template.bind({});
+
+NoUser.args = {
+    user: null
 };

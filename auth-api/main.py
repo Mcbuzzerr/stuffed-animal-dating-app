@@ -135,7 +135,7 @@ async def register(user_in: User_create):
             new_user = User_auth(email=user_in.email, password=user_in.password)
             # print(new_user.user_authGUID)
             new_profileGUID = requests.post(
-                "http://profile-api:8000/profile",
+                "http://ocelot-gateway:80/profile/create",
                 json={"name": user_in.name, "age": user_in.age},
             )
             conn.execute(
