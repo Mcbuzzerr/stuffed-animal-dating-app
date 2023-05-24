@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, Request, Body
+from fastapi import FastAPI, Depends, HTTPException, Request, Body, UploadFile
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from decouple import config
@@ -148,6 +148,17 @@ async def update_profile(
 
     await profile.save()
     return {"message": "Profile updated"}
+
+
+@app.patch("/{profileGUID}/add_picture")
+async def add_picture(
+    profileGUID: str,
+    picture: UploadFile,
+    Authorize: AuthJWT = Depends(),
+):
+    # Take picture, upload to cloudinary
+    # get url, add to profile
+    pass
 
 
 @app.delete("/{profileGUID}")
