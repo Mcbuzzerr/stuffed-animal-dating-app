@@ -36,7 +36,7 @@ export default function Home() {
           <img src="/images/logo.png" alt="Logo" style={{ width: "200px", height: "200px" }} />
           <Typography variant="h1" style={{ color: "white" }}>Welcome to <span style={{ color: "#0033aa" }}>Stitch</span></Typography>
         </Box>
-        <Typography variant="body1" style={{ color: "white" }}>This isn't the vibe I want the final product to have at all, this is just something I threw together</Typography>
+        {/* <Typography variant="body1" style={{ color: "white" }}>This isn't the vibe I want the final product to have at all, this is just something I threw together</Typography> */}
         <Card sx={{
           display: "flex",
           justifyContent: "space-between",

@@ -16,6 +16,7 @@ from models.profile_models import (
     Interests,
     Looking_for,
 )
+from models.email_models import EmailAlert
 from itertools import islice
 import uuid
 import requests
@@ -24,6 +25,7 @@ import cloudinary.uploader
 import cloudinary.api
 import json
 import time
+from confluent_kafka import Consumer, KafkaError, Producer
 
 
 @asynccontextmanager
@@ -40,6 +42,8 @@ async def startup(app: FastAPI):
         app_name="profile-api",
         instance_port=8000,
     )
+
+    app.producer = Producer({"bootstrap.servers": "kafka-broker:29092"})
 
     yield
 
@@ -262,6 +266,37 @@ async def like_profile(
             #   "secondMsg": GET FROM SOMEWHERE, FIGURE OUT LATER (I'm certain it's in one of the objects that's already a variable)
             # }
             # )
+            # entirely untested (Dave style 😎)
+            victim_email = requests.get(
+                "http://ocelot-gateway:80/auth/user/from_profileGUID/"
+                + liked_profileGUID
+            ).json()["email"]
+            message = EmailAlert(
+                to=victim_email,
+                subject="You have a new match!",
+                body="You have a new match! Check your messages to see who it is!",
+            )
+
+            app.producer.produce(
+                "email-queue",
+                str(message.dict()).encode("utf-8"),
+                key="email=alert",
+                callback=receipt,
+            )
+
+            def receipt(self, err, msg):
+                if err is not None:
+                    print(
+                        "Failed to deliver message: {0}: {1}".format(
+                            msg.value(), err.str()
+                        )
+                    )
+                else:
+                    message = "Produced message on topic {0} with value of {1}".format(
+                        msg.topic(), msg.value().decode("utf-8")
+                    )
+                    print(message)
+
             return {"message": "Match!"}
     else:
         await profile.save()
