@@ -42,6 +42,7 @@ services:
       - ./profile-api:/app
     depends_on:
       - profile-db
+      - eureka
   profile-db:
     image: mongo:latest
     container_name: profile-db
