@@ -152,7 +152,7 @@ export const ConversationWindow = ({ userProfileGUID, matchProfile }) => {
                 justifyContent: "flex-start",
                 alignItems: "center",
             }}>
-                <Box sx={{ width: 56, height: 56, display: "inline-block", borderRadius: "50%", marginRight: "1rem", backgroundColor: "grey", backgroundImage: `url(${matchProfile.pictures[0]})`, backgroundSize: "cover" }}> </Box>
+                <Box sx={{ width: 56, height: 56, display: "inline-block", borderRadius: "50%", marginRight: "1rem", backgroundColor: "grey", backgroundImage: `url(${matchProfile.pictures[0]})`, backgroundSize: "cover", backgroundPosition: "center" }}> </Box>
                 <Typography variant="h4" sx={{ display: "inline-block" }}>
                     {matchProfile.name}
                 </Typography>
@@ -173,7 +173,7 @@ export const ConversationWindow = ({ userProfileGUID, matchProfile }) => {
             }}>
                 {messages.map((message, index) => {
                     if (message.sender == matchProfile.profileGUID) {
-                        return (<Box sx={{
+                        return (<Box key={message.timeSent} sx={{
                             alignSelf: "flex-start",
                             display: "flex",
                             flexDirection: "row",

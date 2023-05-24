@@ -15,16 +15,31 @@ export default function Page() {
         window.location.href = "/sign-in";
     }
 
+
     return (<Box sx={{
         display: "flex",
         flexDirection: "row",
-        alignItems: "center",
+        alignItems: "flex-start",
         justifyContent: "space-evenly",
-        minHeight: "100vh"
+        minHeight: "100vh",
+        padding: "1rem"
     }}>
         {userProfile && (<>
-            <ProfileEdit userProfile={userProfile} setUserProfileFunction={setUserProfile} />
-            <ProfileCard user={userProfile} preview />
+            <Box sx={{
+                position: "relative",
+                // top: "1vh",
+                // left: "5vw",
+            }}>
+                <ProfileEdit userProfile={userProfile} setUserProfileFunction={setUserProfile} />
+            </Box>
+            <Box sx={{
+                position: "sticky",
+                top: "50%",
+                transform: "translateY(-50%)",
+                // right: "10vw",
+            }}>
+                <ProfileCard user={userProfile} preview />
+            </Box>
         </>)}
     </Box>)
 }

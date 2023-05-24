@@ -52,7 +52,7 @@ export const MessageBar = ({ matches, setOpenChat, openChat }) => {
                     }
 
                     return (
-                        <Box onClick={() => { handleOpenChat(match) }} sx={{ // turn this console.log into a function that opens a chat window with the selected match (whether that's a new page or change to the current page)
+                        <Box key={match.name} onClick={() => { handleOpenChat(match) }} sx={{ // turn this console.log into a function that opens a chat window with the selected match (whether that's a new page or change to the current page)
                             padding: "1rem",
                             width: "calc(100% - 2rem)",
                             borderBottom: "2px solid #ebebeb",
@@ -64,7 +64,7 @@ export const MessageBar = ({ matches, setOpenChat, openChat }) => {
 
                         }}>
                             <Box sx={{ display: "flex", alignItems: "center" }}>
-                                <Box sx={{ width: 56, height: 56, display: "inline-block", borderRadius: "50%", marginRight: "1rem", backgroundColor: "grey", backgroundImage: `url(${match.pictures[0]})`, backgroundSize: "cover" }}> </Box>
+                                <Box sx={{ width: 56, height: 56, display: "inline-block", borderRadius: "50%", marginRight: "1rem", backgroundColor: "grey", backgroundImage: `url(${match.pictures[0]})`, backgroundSize: "cover", backgroundPosition: "center" }}> </Box>
                                 <Box sx={{}}>
                                     <Typography variant="body2" color="text.secondary" sx={{ fontWeight: "bold" }}>{match.name}</Typography>
                                     <Typography variant="body2" color="text.secondary">{PreviewMessage}</Typography>
