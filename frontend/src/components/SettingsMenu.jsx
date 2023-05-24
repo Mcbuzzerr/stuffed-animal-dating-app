@@ -97,7 +97,7 @@ export const SettingsMenu = ({ userProfile, setUserProfile }) => {
                 borderBottom: expanded ? "2px solid #ebebeb" : "none",
             }}>
                 {userProfile ? (
-                    <Box sx={{ width: 56, height: 56, display: "inline-block", borderRadius: "50%", marginRight: "1rem", backgroundColor: "grey", backgroundImage: `url(${userProfile.pictures[0]})`, backgroundSize: "cover" }}> </Box>
+                    <Box sx={{ width: 56, height: 56, display: "inline-block", borderRadius: "50%", marginRight: "1rem", backgroundColor: "grey", backgroundImage: `url(${userProfile.pictures[0]})`, backgroundSize: "cover", backgroundPosition: "center" }}> </Box>
                 ) : <Box sx={{ width: 56, height: 56, display: "inline-block", borderRadius: "50%", marginRight: "1rem", backgroundColor: "grey" }}> </Box>}
                 <Typography variant="h5" color="text.secondary" sx={{ fontWeight: "bold" }}>{userProfile ? userProfile.name : "User Not Found"}</Typography>
                 <Button variant="contained" color="primary" sx={{ width: "100px" }} onClick={handleExpandClick}>{expanded ? "Save" : "Settings"}</Button>

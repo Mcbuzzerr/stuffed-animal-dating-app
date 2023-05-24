@@ -1,5 +1,5 @@
 # diagram.py
-from diagrams import Diagram, Cluster
+from diagrams import Diagram, Cluster, Edge
 from diagrams.aws.compute import EC2
 from diagrams.aws.database import Database
 from diagrams.aws.network import ELB
@@ -10,6 +10,7 @@ from diagrams.aws.enduser import Worklink
 from diagrams.aws.engagement import SimpleEmailServiceSesEmail
 from diagrams.aws.integration import SimpleQueueServiceSqs
 from diagrams.aws.general import Users
+from diagrams.aws.migration import ApplicationDiscoveryService
 
 with Diagram("Stuffed Animal Dating App", show=False):
     users = Users("Stuffed Animals")
@@ -17,6 +18,12 @@ with Diagram("Stuffed Animal Dating App", show=False):
         react = React("Client \n (React + Next.js))")
 
     with Cluster("Back End"):
+        with Cluster("Supporting Services"):
+            kafka = SimpleQueueServiceSqs("Kafka Message Queue")
+            email = SimpleEmailServiceSesEmail("Email Service \n (FastAPI)")
+            gateway = APIGateway("Ocelot gateway")
+            eureka = ApplicationDiscoveryService("Eureka Service Discovery")
+
         with Cluster("Primary Services"):
             with Cluster("C# Services \n (ASP.NET Core)"):
                 csharpAPI = EC2("User Message API")
@@ -35,19 +42,29 @@ with Diagram("Stuffed Animal Dating App", show=False):
             with Cluster("SQL"):
                 sqlDB = Database("User Auth DB SQL")
 
-        with Cluster("Supporting Services"):
-            kafka = SimpleQueueServiceSqs("Kafka Message Queue")
-            gateway = APIGateway("Kong gateway")
-            email = SimpleEmailServiceSesEmail("Email Service \n (FastAPI)")
-
-    pythonAPIs[1] >> sqlDB
-    pythonAPIs[0] >> mongoDBs[0]
-    csharpAPI >> mongoDBs[1]
-
-    users >> react >> gateway
-    gateway >> pythonAPIs
-    gateway >> csharpAPI
+    (
+        users
+        >> Edge(color="dark", style="dashed")
+        >> react
+        >> Edge(color="dark", style="dashed")
+        >> gateway
+    )
+    gateway >> Edge(color="dark", style="dashed") >> csharpAPI
+    gateway >> Edge(color="dark", style="dashed") >> pythonAPIs[0]
+    gateway >> Edge(color="dark", style="dashed") >> pythonAPIs[1]
 
     pythonAPIs[1] >> kafka
     csharpAPI >> kafka
     kafka >> email
+
+    pythonAPIs >> Edge(color="darkgreen", label="service discovery") >> eureka
+    csharpAPI >> Edge(color="darkgreen", label="service discovery") >> eureka
+    (
+        gateway
+        << Edge(color="darkgreen", label="service registration", style="bold")
+        << eureka
+    )
+
+    pythonAPIs[1] >> Edge(color="blue", label="database connection") << sqlDB
+    pythonAPIs[0] >> Edge(color="blue", label="database connection") << mongoDBs[0]
+    csharpAPI >> Edge(color="blue", label="database connection") << mongoDBs[1]

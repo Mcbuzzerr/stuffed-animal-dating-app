@@ -105,7 +105,7 @@ export default function Page() {
         </Box>
         <MessageBar matches={matches} setOpenChat={setOpenChat} openChat={openChat} />
         {userProfile && (<>
-            {(userProfile.bio == "" || userProfile.lookingFor == "" || userProfile.pronouns.length == 0 || userProfile.interests == 0) ? (<>
+            {(userProfile.bio == "" || userProfile.lookingFor == "" || userProfile.pronouns.length == 0 || userProfile.interests == 0 || userProfile.pictures.length == 0) ? (<>
                 <Modal open={true}>
                     <Card sx={{
                         position: "absolute",

@@ -142,7 +142,7 @@ export const ProfileCard = ({ user, preview, queuePosition, setQueuePosition, ma
                             bottom: 0
                         }}>
                             {user ? user.pictures.map((picture, index) => (
-                                <img src={picture} style={{
+                                <img key={picture} src={picture} style={{
                                     width: "100%",
                                     height: "100%",
                                     objectFit: "cover",
@@ -212,7 +212,7 @@ export const ProfileCard = ({ user, preview, queuePosition, setQueuePosition, ma
                                 overflowY: "hidden"
                             }} ref={pronounsRef}>
                                 {user ? user.pronouns.map((pronoun) => (
-                                    <Typography variant="body1" sx={{
+                                    <Typography key={pronoun} variant="body1" sx={{
                                         border: "solid 1px #bbb",
                                         padding: "0 3px",
                                         borderRadius: "5px",
@@ -273,7 +273,7 @@ export const ProfileCard = ({ user, preview, queuePosition, setQueuePosition, ma
                                 overflowY: "hidden"
                             }} ref={interestsRef}>
                                 {user ? user.interests.map((interest) => (
-                                    <Typography variant="body1" sx={{
+                                    <Typography key={interest} variant="body1" sx={{
                                         border: "solid 1px #bbb",
                                         padding: "0 3px",
                                         borderRadius: "5px",

@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, Request, Body
+from fastapi import FastAPI, Depends, HTTPException, Request, Body, UploadFile
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from decouple import config
@@ -19,6 +19,11 @@ from models.profile_models import (
 from itertools import islice
 import uuid
 import requests
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+import json
+import time
 
 
 @asynccontextmanager
@@ -148,6 +153,71 @@ async def update_profile(
 
     await profile.save()
     return {"message": "Profile updated"}
+
+
+@app.patch("/{profileGUID}/add_picture")
+async def add_picture(
+    profileGUID: str,
+    picture: UploadFile,
+    Authorize: AuthJWT = Depends(),
+):
+    Authorize.jwt_required()
+    profile = await Profile.find_one({"profileGUID": uuid.UUID(profileGUID)})
+    # Take picture, upload to cloudinary
+    # get url, add to profile
+    # Set your Cloudinary credentials
+    # ==============================
+
+    # Set configuration parameter: return "https" URLs by setting secure=True
+    # ==============================
+    cloud_config = cloudinary.config(
+        cloud_name=config("CLOUD_NAME"),
+        api_key=config("CLOUDINARY_API_KEY"),
+        api_secret=config("CLOUDINARY_SECRET"),
+        secure=True,
+    )
+    # print(
+    #     "****1. Set up and configure the SDK:****\nCredentials: ",
+    #     cloud_config.cloud_name,
+    #     cloud_config.api_key,
+    #     "\n",
+    # )
+
+    # Upload the image.
+    # Set the asset's public ID and allow overwriting the asset with new versions
+    fileName = profileGUID + "_" + str(time.time())
+    cloudinary.uploader.upload(
+        picture.file,
+        public_id=fileName,
+        unique_filename=False,
+        overwrite=True,
+    )
+
+    # Build the URL for the image and save it in the variable 'srcURL'
+    srcURL = cloudinary.CloudinaryImage(fileName).build_url()
+
+    profile.pictures.append(srcURL)
+    await profile.save()
+
+    # Log the image URL to the console.
+    # Copy this URL in a browser tab to generate the image on the fly.
+    print("****2. Upload an image****\nDelivery URL: ", srcURL, "\n")
+    return {"message": "Picture added", "URL": srcURL}
+
+
+@app.delete("/{profileGUID}/delete_picture/{picture_index}")
+async def delete_picture(
+    profileGUID: str, picture_index: int, Authorize: AuthJWT = Depends()
+):
+    Authorize.jwt_required()
+    profile = await Profile.find_one({"profileGUID": uuid.UUID(profileGUID)})
+    if profile is None:
+        raise HTTPException(status_code=404, detail="Profile not found")
+    if picture_index < 0 or picture_index >= len(profile.pictures):
+        raise HTTPException(status_code=404, detail="Picture not found")
+    profile.pictures.pop(picture_index)
+    await profile.save()
+    return {"message": "Picture deleted"}
 
 
 @app.delete("/{profileGUID}")
