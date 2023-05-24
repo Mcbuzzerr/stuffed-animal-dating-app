@@ -3,6 +3,7 @@ import { Avatar, Card, CardContent, CardHeader, Typography, Box, Button, Modal }
 import { MessageBar } from "@/components/messageBar";
 import { SettingsMenu } from "@/components/SettingsMenu";
 import { ProfileCard } from "@/components/profileCard";
+import { ConversationWindow } from "@/components/conversationWindow";
 import { useEffect, useState } from "react";
 
 
@@ -14,6 +15,7 @@ export default function Page() {
     const [queuePosition, setQueuePosition] = useState(0);
     const [trigger, setTrigger] = useState(false);
     const [doneForDay, setDoneForDay] = useState(false);
+    const [openChat, setOpenChat] = useState(false);
 
     useEffect(() => {
         if (localStorage.getItem("profile") != null) {
@@ -63,6 +65,12 @@ export default function Page() {
         asyncWorkaround();
     }, [trigger])
 
+    useEffect(() => {
+        if (userProfile != null) {
+            localStorage.setItem("profile", JSON.stringify(userProfile));
+        }
+    }, [userProfile])
+
     const getNewBatch = () => {
         setTrigger(!trigger)
     }
@@ -95,10 +103,7 @@ export default function Page() {
             <img src="/images/logo.png" style={{ height: "100%" }} />
             <Typography variant="h4" sx={{ display: "inline-block" }}>Stitch</Typography>
         </Box>
-        <MessageBar matches={matches} />
-        {/* <Button onClick={() => {
-            console.log(matches);
-        }}>Test</Button> */}
+        <MessageBar matches={matches} setOpenChat={setOpenChat} openChat={openChat} />
         {userProfile && (<>
             {(userProfile.bio == "" || userProfile.lookingFor == "" || userProfile.pronouns.length == 0 || userProfile.interests == 0) ? (<>
                 <Modal open={true}>
@@ -119,7 +124,7 @@ export default function Page() {
                 </Modal>
             </>) : (null)}
             {
-                profileQueue && profileQueue.length > 0 && queuePosition < profileQueue.length && (<>
+                !openChat && profileQueue && profileQueue.length > 0 && queuePosition < profileQueue.length && (<>
                     <ProfileCard
                         user={profileQueue[queuePosition]}
                         setQueuePosition={setQueuePosition}
@@ -129,15 +134,18 @@ export default function Page() {
                     />
                 </>)
             }
+            {openChat && <ConversationWindow userProfileGUID={JSON.parse(localStorage.getItem("user")).profileGUID} matchProfile={openChat} />}
+
             {
-                doneForDay && (<>
+                !openChat && doneForDay && (<>
                     <Card sx={{
                         position: "absolute",
                         top: "50%",
                         left: "50%",
                         transform: "translate(-50%, -50%)",
                         width: "500px",
-                        textAlign: "center"
+                        textAlign: "center",
+                        zIndex: 0
                     }}>
                         <CardHeader title="Looks like you're out of profiles for today!" sx={{ userSelect: "none" }} />
                         <CardContent>
@@ -147,7 +155,7 @@ export default function Page() {
                 </>)
             }
 
-            <SettingsMenu userProfile={userProfile} />
+            <SettingsMenu userProfile={userProfile} setUserProfile={setUserProfile} />
         </>)}
     </Box>)
 }

@@ -22,6 +22,5 @@ export default function Page() {
             </Box>
         </Link>
         <SignInCard />
-        <Link href="/main">Dev Link to main page</Link>
     </Box>)
 }

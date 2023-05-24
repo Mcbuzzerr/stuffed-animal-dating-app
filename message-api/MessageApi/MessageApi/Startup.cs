@@ -18,7 +18,7 @@ namespace MessageApi
             {
                 options.AddDefaultPolicy(builder =>
                 {
-                    builder.WithOrigins("http://127.0.0.1:5500")
+                    builder.WithOrigins("http://127.0.0.1:3000")
                            .AllowAnyMethod()
                            .AllowAnyHeader()
                            .AllowCredentials();
@@ -35,7 +35,7 @@ namespace MessageApi
             // Register MongoDB dependencies
             services.AddSingleton<IMongoDatabase>(provider =>
             {
-                var mongoClient = new MongoClient("mongodb://localhost:27018");
+                var mongoClient = new MongoClient("mongodb://root:pass@localhost:27018/?authMechanism=SCRAM-SHA-256");
                 return mongoClient.GetDatabase("MessageDB");
             });
 

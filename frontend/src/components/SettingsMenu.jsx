@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Avatar, Card, CardContent, CardHeader, Typography, Box, Button, Switch, FormGroup, FormControlLabel, Slider } from "@mui/material";
 import Head from "next/head";
 
-export const SettingsMenu = ({ userProfile }) => {
+export const SettingsMenu = ({ userProfile, setUserProfile }) => {
     const [expanded, setExpanded] = useState(false);
     if (userProfile.agePrefs.length == 0) {
         userProfile.agePrefs = [0, 60];
@@ -12,8 +12,42 @@ export const SettingsMenu = ({ userProfile }) => {
     const [doNotifs, setDoNotifs] = useState(userProfile != null ? userProfile.doNotifs : true);
     const [isHidden, setIsHidden] = useState((userProfile != null ? userProfile.isHidden : true));
 
-    const handleExpandClick = () => {
+    const handleExpandClick = async () => {
         console.log(userProfile);
+        if (expanded) {
+            setUserProfile({ ...userProfile, agePrefs: ageRange, doNotifs: doNotifs, isHidden: isHidden });
+            let userProfileUpdate = {
+                name: userProfile.name,
+                age: userProfile.age,
+                bio: userProfile.bio,
+                pictures: userProfile.pictures,
+                pronouns: userProfile.pronouns,
+                interests: userProfile.interests,
+                lookingFor: userProfile.lookingFor,
+                matches: userProfile.matches,
+                likes: userProfile.likes,
+                dislikes: userProfile.dislikes,
+                doNotifs: doNotifs,
+                agePrefs: ageRange,
+                isHidden: isHidden,
+            }
+            const profileGUID = JSON.parse(localStorage.getItem("user")).profileGUID;
+            let response = await fetch(`http://localhost:5041/profile/${profileGUID}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${localStorage.getItem("token")}`,
+                },
+                body: JSON.stringify(userProfileUpdate),
+            }).then(res => {
+                return res.json()
+            })
+                .then(data => {
+                    console.log(data);
+                }).catch(err => {
+                    console.log(err)
+                })
+        }
         setExpanded(!expanded);
     };
 
@@ -89,8 +123,8 @@ export const SettingsMenu = ({ userProfile }) => {
                         <FormControlLabel control={<Switch checked={isHidden} onChange={handleIsHiddenChange} />} label={isHidden ? "yes" : "no"} />
                     </FormGroup>
                     <Typography variant="h5" sx={{ fontWeight: "bold" }}>Account</Typography>
-                    <Button>Update Email or Password</Button>
-                    <Button color="error" variant="contained" sx={{ marginLeft: "1rem" }}>Delete Account</Button>
+                    {/* <Button sx={{ marginRight: "1rem" }}>Update Email or Password</Button> */}
+                    <Button color="error" variant="contained">Delete Account</Button>
 
 
                 </Box>) : null}

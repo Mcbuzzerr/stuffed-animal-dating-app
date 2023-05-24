@@ -5,12 +5,17 @@ import Head from "next/head";
 import { display } from "@mui/system";
 
 
-export const MessageBar = ({ matches }) => {
+export const MessageBar = ({ matches, setOpenChat, openChat }) => {
     const [expanded, setExpanded] = useState(false);
 
     const handleExpandedToggle = () => {
         setExpanded(!expanded);
+        setOpenChat(false);
     };
+
+    const handleOpenChat = (matchProfile) => {
+        setOpenChat(matchProfile);
+    }
 
     if (!matches) matches = [];
 
@@ -34,7 +39,7 @@ export const MessageBar = ({ matches }) => {
         }}>
             <Box sx={{ width: "calc(100% - 2rem)", padding: "1rem", borderBottom: expanded ? "2px solid #ebebeb" : "none", position: "sticky", display: "flex", justifyContent: "flex-start", height: "56px", alignItems: "center" }}>
                 <Typography variant="h5" color="text.secondary" sx={{ fontWeight: "bold" }}>Messages</Typography>
-                <Button variant="contained" onClick={handleExpandedToggle} sx={{ marginLeft: "1rem" }}>{expanded ? "close" : "open"}</Button>
+                <Button variant="contained" onClick={handleExpandedToggle} sx={{ marginLeft: "1rem" }}>{expanded ? (openChat ? "close chat" : "close") : "open"}</Button>
             </Box>
             {expanded ?
                 (matches.length != 0 ? matches.map((match) => {
@@ -47,7 +52,7 @@ export const MessageBar = ({ matches }) => {
                     }
 
                     return (
-                        <Box onClick={() => { console.log("clicked " + match.profileGUID) }} sx={{ // turn this console.log into a function that opens a chat window with the selected match (whether that's a new page or change to the current page)
+                        <Box onClick={() => { handleOpenChat(match) }} sx={{ // turn this console.log into a function that opens a chat window with the selected match (whether that's a new page or change to the current page)
                             padding: "1rem",
                             width: "calc(100% - 2rem)",
                             borderBottom: "2px solid #ebebeb",

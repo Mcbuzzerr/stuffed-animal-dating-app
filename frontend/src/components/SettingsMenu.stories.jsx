@@ -5,9 +5,20 @@ import { SettingsMenu } from "./SettingsMenu";
 export default {
     title: "Components/SettingsMenu",
     component: SettingsMenu,
+    decorators: [
+        (Story) => {
+            localStorage.setItem("user", JSON.stringify({ "user_authGUID": "01880746-257F-7330-81C6-013031C503B1", "email": "updatedEmail@website.com", "profileGUID": "018806c6-f091-7d44-8b85-2425aa863178", "isAdmin": true }));
+            return <Story />
+        }
+
+    ]
 };
 
-const Template = (args) => <SettingsMenu {...args} />;
+const setUserProfile = (value) => {
+    console.log("setUserProfile");
+}
+
+const Template = (args) => <SettingsMenu {...args} setUserProfile={setUserProfile} />;
 export const Default = Template.bind({});
 Default.args = {
     userProfile: {

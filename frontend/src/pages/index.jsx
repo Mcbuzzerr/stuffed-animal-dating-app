@@ -2,11 +2,14 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { css } from '@emotion/react'
 import { Avatar, Card, CardContent, CardHeader, Typography, Box, Button } from "@mui/material";
+import { useEffect } from 'react';
 
 export default function Home() {
-  if (localStorage.getItem("token") != null) {
-    window.location.href = "/main";
-  }
+  useEffect(() => {
+    if (localStorage.getItem("token") != null) {
+      window.location.href = "/main";
+    }
+  }, []);
 
   return (
     <>

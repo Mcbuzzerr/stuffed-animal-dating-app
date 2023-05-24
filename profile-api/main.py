@@ -18,6 +18,7 @@ from models.profile_models import (
 )
 from itertools import islice
 import uuid
+import requests
 
 
 @asynccontextmanager
@@ -182,6 +183,15 @@ async def like_profile(
             await profile.save()
             await liked_profile.save()
             # Call Message API to create a new chat
+            # requests.post(
+            # "http://ocelot-gateway:80/<MESSAGE/API/PATH>",
+            # json={
+            #   "first": profileGUID,
+            #   "firstMsg": message,
+            #   "second": liked_profileGUID,
+            #   "secondMsg": GET FROM SOMEWHERE, FIGURE OUT LATER (I'm certain it's in one of the objects that's already a variable)
+            # }
+            # )
             return {"message": "Match!"}
     else:
         await profile.save()

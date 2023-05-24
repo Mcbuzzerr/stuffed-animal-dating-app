@@ -25,7 +25,13 @@ export const SignInCard = ({ }) => {
             },
             body: JSON.stringify({ email, password })
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.status == 200) {
+                    return res.json()
+                } else {
+                    setError(true);
+                }
+            })
             .then(data => {
                 if (data == null || data.detail == "User not found") {
                     setError(true);
