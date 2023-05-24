@@ -104,7 +104,7 @@ $(document).ready(function () {
     connection.on('ReceiveMessage', function (message) {
       console.log('Received message:', message);
 
-      const sender = (message.sender === user1) ? user1 : user2;
+      const sender = (message.sender === user2) ? user1 : user2;
       const recipient = (message.sender === user1) ? user2 : user1;
 
       const senderTextboxId = `#${sender}-input`;
