@@ -72,14 +72,37 @@ async def authjwt_exception_handler(request: Request, exc: AuthJWTException):
 @app.get("/hello")
 async def root(Authorize: AuthJWT = Depends()):
     Authorize.jwt_optional()
-    current_user = Authorize.get_jwt_subject()
+    current_user_email = Authorize.get_jwt_subject()
     profiles = await Profile.find_all().to_list()
-    for profile in profiles:
-        print(profile)
+    # for profile in profiles:
+    #     print(profile)
 
-    if current_user is None:
+    if current_user_email is None:
         return {"message": "Hello World"}
-    return {"message": f"Hello {current_user}"}
+
+    message = EmailAlert(
+        recipients=[current_user_email],
+        subject="This is a test email",
+        message="You have",
+    )
+
+    def receipt(self, err, msg):
+        if err is not None:
+            print("Failed to deliver message: {0}: {1}".format(msg.value(), err.str()))
+        else:
+            message = "Produced message on topic {0} with value of {1}".format(
+                msg.topic(), msg.value().decode("utf-8")
+            )
+            print(message)
+
+    app.producer.produce(
+        "email-queue",
+        str(message.dict()).encode("utf-8"),
+        key="email-alert",
+        callback=receipt,
+    )
+
+    return {"message": f"Hello {current_user_email}"}
 
 
 # UPLOAD PROFILE PICTURE ENDPOINT
@@ -272,16 +295,9 @@ async def like_profile(
                 + liked_profileGUID
             ).json()["email"]
             message = EmailAlert(
-                to=victim_email,
+                recipients=[victim_email],
                 subject="You have a new match!",
-                body="You have a new match! Check your messages to see who it is!",
-            )
-
-            app.producer.produce(
-                "email-queue",
-                str(message.dict()).encode("utf-8"),
-                key="email=alert",
-                callback=receipt,
+                bomessagedy="You have a new match! Check your messages to see who it is!",
             )
 
             def receipt(self, err, msg):
@@ -296,6 +312,13 @@ async def like_profile(
                         msg.topic(), msg.value().decode("utf-8")
                     )
                     print(message)
+
+            app.producer.produce(
+                "email-queue",
+                str(message.dict()).encode("utf-8"),
+                key="email-alert",
+                callback=receipt,
+            )
 
             return {"message": "Match!"}
     else:

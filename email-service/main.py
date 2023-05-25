@@ -6,12 +6,6 @@ from util.kafkaUtil import consumer, DTicket
 
 app = FastAPI()
 
-from starlette_exporter import PrometheusMiddleware, handle_metrics
-
-app.add_middleware(PrometheusMiddleware)
-app.add_route("/metrics", handle_metrics)
-
-
 conf = ConnectionConfig(
     MAIL_USERNAME=config("MAIL_FROM"),
     MAIL_PASSWORD=config("MAIL_PASSWORD"),

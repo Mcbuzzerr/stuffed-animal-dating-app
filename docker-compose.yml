@@ -115,4 +115,17 @@ services:
       # KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
       # KAFKA_JMX_PORT: 9101
       # KAFKA_JMX_HOSTNAME: localhost
-
+  email-service:
+    container_name: email-service
+    build: ./email-service
+    # deploy:
+    #   replicas: 3
+    ports:
+      - "803:8000"
+    environment:
+      - MAIL_PASSWORD = Ec33y8RvuksSq85BPS
+      - MAIL_FROM = hillary.windler93@ethereal.email
+      - MAIL_SERVER = smtp.ethereal.email
+      - MAIL_PORT = 587
+    volumes:
+      - ./email-service:/app
