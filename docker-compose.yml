@@ -43,6 +43,7 @@ services:
     depends_on:
       - profile-db
       - eureka
+      - kafka-broker
   profile-db:
     image: mongo:latest
     container_name: profile-db

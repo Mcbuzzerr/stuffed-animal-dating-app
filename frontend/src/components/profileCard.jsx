@@ -169,13 +169,13 @@ export const ProfileCard = ({ user, preview, queuePosition, setQueuePosition, ma
                             {user ? (
                                 pictureIndex > 0 ? <Box onClick={() => handleChangePicture(-1)} sx={{
                                     fontSize: "5rem",
-                                    color: "black",
+                                    color: "white",
                                     marginLeft: "-1rem"
                                 }}><i className="fi fi-br-caret-left"></i></Box> : <Box></Box>) : <></>}
                             {user ? (
                                 pictureIndex < user.pictures.length - 1 ? <Box onClick={() => handleChangePicture(1)} sx={{
                                     fontSize: "5rem",
-                                    color: "black",
+                                    color: "white",
                                     marginRight: "-1rem"
                                 }}><i className="fi fi-br-caret-right"></i></Box> : <Box></Box>) : <></>}
                         </Box>

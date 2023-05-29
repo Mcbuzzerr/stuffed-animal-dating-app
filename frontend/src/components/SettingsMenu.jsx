@@ -111,9 +111,9 @@ export const SettingsMenu = ({ userProfile, setUserProfile }) => {
                     <Typography variant="h4" sx={{ fontWeight: "bold" }}>Settings</Typography>
                     <Typography variant="h5" sx={{ fontWeight: "bold" }}>Profile</Typography>
                     <Button color="secondary" variant="contained" href="update-profile">Edit Profile</Button>
-                    <Typography variant="h5" sx={{ fontWeight: "bold" }}>Preferences</Typography>
+                    {/* <Typography variant="h5" sx={{ fontWeight: "bold" }}>Preferences</Typography>
                     <Typography variant="body1" sx={{ fontWeight: "bold" }}>Age Range</Typography>
-                    <Slider value={ageRange} onChange={handleAgePrefsChange} valueLabelDisplay="auto" marks={true} min={18} max={60} />
+                    <Slider value={ageRange} onChange={handleAgePrefsChange} valueLabelDisplay="auto" marks={true} min={18} max={60} /> */}
                     <Typography variant="body1" sx={{ fontWeight: "bold" }}>Notifications</Typography>
                     <FormGroup>
                         <FormControlLabel control={<Switch checked={doNotifs} onChange={handleDoNotifsChange} />} label={doNotifs ? "yes" : "no"} />

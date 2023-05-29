@@ -293,11 +293,12 @@ async def like_profile(
             victim_email = requests.get(
                 "http://ocelot-gateway:80/auth/user/from_profileGUID/"
                 + liked_profileGUID
-            ).json()["email"]
+            ).json()["user"]
+            victim_email = victim_email["email"]
             message = EmailAlert(
                 recipients=[victim_email],
                 subject="You have a new match!",
-                bomessagedy="You have a new match! Check your messages to see who it is!",
+                message="You have a new match! Check your messages to see who it is!",
             )
 
             def receipt(self, err, msg):
