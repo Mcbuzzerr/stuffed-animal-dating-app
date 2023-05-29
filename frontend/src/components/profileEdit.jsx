@@ -34,6 +34,8 @@ export const ProfileEdit = ({ userProfile, setUserProfileFunction }) => {
     const [possible_lookingFor, setPossibleLookingFor] = useState(null);
 
     const [file, setFile] = useState(null);
+    const [uploadDisabled, setUploadDisabled] = useState(false);
+    const [uploadText, setUploadText] = useState("Upload");
 
     useEffect(() => {
         const asyncFunction = async () => {
@@ -54,7 +56,7 @@ export const ProfileEdit = ({ userProfile, setUserProfileFunction }) => {
                     output[i] = response.interests[i]
                 }
             }
-            setPossibleInterests(output)
+            setPossibleInterests(output.sort())
         }
         asyncFunction()
     }, [])
@@ -313,7 +315,7 @@ export const ProfileEdit = ({ userProfile, setUserProfileFunction }) => {
         let response = await fetch(`http://localhost:5041/profile/${profileGUID}`, {
             method: "PATCH",
             headers: {
-                "Content-Type": undefined,
+                "Content-Type": "application/json",
                 "Authorization": `Bearer ${localStorage.getItem("token")}`,
             },
             body: JSON.stringify(userProfileUpdate),
@@ -333,6 +335,8 @@ export const ProfileEdit = ({ userProfile, setUserProfileFunction }) => {
     }
 
     const handleUploadImage = async (e) => {
+        setUploadDisabled(true)
+        setUploadText("Uploading...")
         const profileGUID = JSON.parse(localStorage.getItem("user")).profileGUID;
         const formData = new FormData();
         formData.append("picture", file);
@@ -346,15 +350,15 @@ export const ProfileEdit = ({ userProfile, setUserProfileFunction }) => {
             .then(data => {
                 console.log(data)
                 if (data.message == "Picture added") {
-                    alert("Upload successful!")
+                    // alert("Upload successful!")
                     let userProfileUpdate = {
-                        name: userProfile.name,
-                        age: userProfile.age,
-                        bio: userProfile.bio,
+                        name: nameField,
+                        age: ageField,
+                        bio: bioField,
                         pictures: userProfile.pictures.concat(data.URL),
-                        pronouns: userProfile.pronouns,
-                        interests: userProfile.interests,
-                        lookingFor: userProfile.lookingFor,
+                        pronouns: pronouns,
+                        interests: interests,
+                        lookingFor: lookingFor,
                         matches: userProfile.matches,
                         likes: userProfile.likes,
                         dislikes: userProfile.dislikes,
@@ -364,6 +368,8 @@ export const ProfileEdit = ({ userProfile, setUserProfileFunction }) => {
                     }
                     setUserProfileFunction(userProfileUpdate)
                     localStorage.setItem("profile", JSON.stringify(userProfileUpdate))
+                    setUploadDisabled(false)
+                    setUploadText("Upload")
                 }
             }).catch(err => {
                 console.log(err)
@@ -427,7 +433,7 @@ export const ProfileEdit = ({ userProfile, setUserProfileFunction }) => {
             </ImageList>
             <Typography variant="h5">Upload Picture(s)</Typography>
             <input type="file" onChange={handleFileChange} accept=".png, .jpeg, .jpg, .gif" />
-            <Button variant="contained" size="small" onClick={handleUploadImage}>Upload</Button>
+            <Button variant="contained" size="small" onClick={handleUploadImage} disabled={uploadDisabled}>{uploadText}</Button>
             <TextField size="small" label="Name" fullWidth value={nameField} onChange={handleNameFieldChange} sx={{ marginTop: "10px" }} />
             <TextField size="small" label="Age" type="number" value={ageField} onChange={handleAgeFieldChange} sx={{ marginTop: "10px" }} />
             <TextField size="small" label="Bio" fullWidth multiline minRows={3} value={bioField} onChange={handleBioFieldChange} sx={{ marginTop: "10px" }} />

@@ -16,6 +16,7 @@ from models.profile_models import (
     Interests,
     Looking_for,
 )
+from models.email_models import EmailAlert
 from itertools import islice
 import uuid
 import requests
@@ -24,6 +25,7 @@ import cloudinary.uploader
 import cloudinary.api
 import json
 import time
+from confluent_kafka import Consumer, KafkaError, Producer
 
 
 @asynccontextmanager
@@ -40,6 +42,8 @@ async def startup(app: FastAPI):
         app_name="profile-api",
         instance_port=8000,
     )
+
+    app.producer = Producer({"bootstrap.servers": "kafka-broker:29092"})
 
     yield
 
@@ -68,14 +72,37 @@ async def authjwt_exception_handler(request: Request, exc: AuthJWTException):
 @app.get("/hello")
 async def root(Authorize: AuthJWT = Depends()):
     Authorize.jwt_optional()
-    current_user = Authorize.get_jwt_subject()
+    current_user_email = Authorize.get_jwt_subject()
     profiles = await Profile.find_all().to_list()
-    for profile in profiles:
-        print(profile)
+    # for profile in profiles:
+    #     print(profile)
 
-    if current_user is None:
+    if current_user_email is None:
         return {"message": "Hello World"}
-    return {"message": f"Hello {current_user}"}
+
+    message = EmailAlert(
+        recipients=[current_user_email],
+        subject="This is a test email",
+        message="You have",
+    )
+
+    def receipt(self, err, msg):
+        if err is not None:
+            print("Failed to deliver message: {0}: {1}".format(msg.value(), err.str()))
+        else:
+            message = "Produced message on topic {0} with value of {1}".format(
+                msg.topic(), msg.value().decode("utf-8")
+            )
+            print(message)
+
+    app.producer.produce(
+        "email-queue",
+        str(message.dict()).encode("utf-8"),
+        key="email-alert",
+        callback=receipt,
+    )
+
+    return {"message": f"Hello {current_user_email}"}
 
 
 # UPLOAD PROFILE PICTURE ENDPOINT
@@ -262,6 +289,38 @@ async def like_profile(
             #   "secondMsg": GET FROM SOMEWHERE, FIGURE OUT LATER (I'm certain it's in one of the objects that's already a variable)
             # }
             # )
+            # entirely untested (Dave style 😎)
+            victim_email = requests.get(
+                "http://ocelot-gateway:80/auth/user/from_profileGUID/"
+                + liked_profileGUID
+            ).json()["user"]
+            victim_email = victim_email["email"]
+            message = EmailAlert(
+                recipients=[victim_email],
+                subject="You have a new match!",
+                message="You have a new match! Check your messages to see who it is!",
+            )
+
+            def receipt(self, err, msg):
+                if err is not None:
+                    print(
+                        "Failed to deliver message: {0}: {1}".format(
+                            msg.value(), err.str()
+                        )
+                    )
+                else:
+                    message = "Produced message on topic {0} with value of {1}".format(
+                        msg.topic(), msg.value().decode("utf-8")
+                    )
+                    print(message)
+
+            app.producer.produce(
+                "email-queue",
+                str(message.dict()).encode("utf-8"),
+                key="email-alert",
+                callback=receipt,
+            )
+
             return {"message": "Match!"}
     else:
         await profile.save()

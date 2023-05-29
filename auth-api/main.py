@@ -114,6 +114,26 @@ async def get_user(user_authGUID_or_email: str, Authorize: AuthJWT = Depends()):
             }
 
 
+@app.get("/user/from_profileGUID/{userProfileGUID}", status_code=200)
+async def get_user_from_profile(userProfileGUID: str):
+    with app.engine.connect() as conn:
+        results = conn.execute(
+            text("SELECT * FROM UserAuth WHERE profileGUID = :profileGUID"),
+            {"profileGUID": userProfileGUID},
+        ).one_or_none()
+        if results is None:
+            raise HTTPException(status_code=404, detail="User not found")
+        else:
+            return {
+                "user": {
+                    "user_authGUID": results.user_authGUID,
+                    "email": results.email,
+                    "profileGUID": results.profileGUID,
+                    "isAdmin": results.isAdmin,
+                }
+            }
+
+
 @app.post("/register", status_code=201)
 async def register(user_in: User_create):
     if user_in.age < 18:

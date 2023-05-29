@@ -43,6 +43,7 @@ services:
     depends_on:
       - profile-db
       - eureka
+      - kafka-broker
   profile-db:
     image: mongo:latest
     container_name: profile-db
@@ -87,3 +88,45 @@ services:
       - "5041:80"
     depends_on:
       - eureka
+  kafka-zookeeper:
+    container_name: kafka-zookeeper
+    image: confluentinc/cp-zookeeper:latest
+    # ports:
+    # - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+  kafka-broker:
+    container_name: kafka-broker
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - kafka-zookeeper
+    ports:
+      - "29092:29092" # Main port for Kafka
+      # - "9092:9092"
+      # - "9101:9101"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: kafka-zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092, PLAINTEXT_INTERNAL://kafka-broker:29092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      # KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      # KAFKA_JMX_PORT: 9101
+      # KAFKA_JMX_HOSTNAME: localhost
+  email-service:
+    container_name: email-service
+    build: ./email-service
+    # deploy:
+    #   replicas: 3
+    ports:
+      - "803:8000"
+    environment:
+      - MAIL_PASSWORD = Ec33y8RvuksSq85BPS
+      - MAIL_FROM = hillary.windler93@ethereal.email
+      - MAIL_SERVER = smtp.ethereal.email
+      - MAIL_PORT = 587
+    volumes:
+      - ./email-service:/app
