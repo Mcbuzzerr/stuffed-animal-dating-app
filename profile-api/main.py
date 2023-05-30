@@ -281,15 +281,14 @@ async def like_profile(
             await liked_profile.save()
             # Call Message API to create a new chat
             requests.post(
-            "http://ocelot-gateway:80/message/api/match",
+                "http://ocelot-gateway:80/message/api/match",
                 json={
-                "first": profileGUID,
-                "firstMsg": message,
-                "second": liked_profileGUID,
-                "secondMsg": "testSecondMsg" #needs to talk to database to get the message
-                }
+                    "first": profileGUID,
+                    "firstMsg": message,
+                    "second": liked_profileGUID,
+                    "secondMsg": like.message,
+                },
             )
-            # entirely untested (Dave style 😎)
             victim_email = requests.get(
                 "http://ocelot-gateway:80/auth/user/from_profileGUID/"
                 + liked_profileGUID
