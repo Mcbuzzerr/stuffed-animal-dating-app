@@ -271,6 +271,16 @@ async def like_profile(
         raise HTTPException(status_code=404, detail="Profile not found")
     if liked_profile is None:
         raise HTTPException(status_code=404, detail="Liked Profile not found")
+    
+    liked_profile_message = None
+
+    for like in liked_profile.get('likes', []):
+        if like.get('recipientGUID') == str(profile.get('profileGUID')):
+            liked_profile_message = like.get('message')
+            break
+
+    if liked_profile_message is None:
+        raise HTTPException(status_code=404, detail="Liked profile message not found")
 
     profile.likes.append(Like(message=message.message, recipientGUID=liked_profileGUID))
     for like in liked_profile.likes:
@@ -286,7 +296,7 @@ async def like_profile(
                     "first": profileGUID,
                     "firstMsg": message,
                     "second": liked_profileGUID,
-                    "secondMsg": like.message,
+                    "secondMsg": liked_profile_message
                 },
             )
             victim_email = requests.get(
