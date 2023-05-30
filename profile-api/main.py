@@ -280,15 +280,15 @@ async def like_profile(
             await profile.save()
             await liked_profile.save()
             # Call Message API to create a new chat
-            # requests.post(
-            # "http://ocelot-gateway:80/<MESSAGE/API/PATH>",
-            # json={
-            #   "first": profileGUID,
-            #   "firstMsg": message,
-            #   "second": liked_profileGUID,
-            #   "secondMsg": GET FROM SOMEWHERE, FIGURE OUT LATER (I'm certain it's in one of the objects that's already a variable)
-            # }
-            # )
+            requests.post(
+            "http://ocelot-gateway:80/message/api/match",
+                json={
+                "first": profileGUID,
+                "firstMsg": message,
+                "second": liked_profileGUID,
+                "secondMsg": "testSecondMsg" #needs to talk to database to get the message
+                }
+            )
             # entirely untested (Dave style 😎)
             victim_email = requests.get(
                 "http://ocelot-gateway:80/auth/user/from_profileGUID/"

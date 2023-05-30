@@ -4,14 +4,22 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
+using Steeltoe.Discovery.Client;
+using Steeltoe.Discovery.Eureka;
 using System;
 
 namespace MessageApi
 {
     public class Startup
     {
+        private readonly IConfiguration _configuration;
+        public Startup(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors(options =>
@@ -26,6 +34,8 @@ namespace MessageApi
             });
 
             services.AddControllers();
+
+            services.AddDiscoveryClient(_configuration);
 
             services.AddSwaggerGen(c =>
             {
@@ -60,7 +70,7 @@ namespace MessageApi
             });
 
             app.UseRouting();
-
+            app.UseDiscoveryClient();
             app.UseCors();
 
             app.UseEndpoints(endpoints =>

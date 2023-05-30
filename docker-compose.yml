@@ -55,16 +55,14 @@ services:
       MONGO_INITDB_ROOT_USERNAME: "root"
       MONGO_INITDB_ROOT_PASSWORD: "pass"
       MONGO_INITDB_DATABASE: "profile"
-  # message-api: # Not my part so I don't know what it'll actually look like
-  #   container_name: message-api
-  #   build: ./message-api
-  #   ports:
-  #     - "8003:8000"
-  #   volumes:
-  #     - ./message-api:/app
-  #   # environment:
-  #   depends_on:
-  #     - message-db
+  message-api:
+    container_name: message-api
+    build: ./message-api/MessageApi
+    ports:
+      - "7474:7474"
+    depends_on:
+      - message-db
+      - eureka
   message-db:
     image: mongo:latest
     container_name: message-db

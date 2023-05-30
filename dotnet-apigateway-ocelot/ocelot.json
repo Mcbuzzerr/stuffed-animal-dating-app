@@ -39,6 +39,20 @@
         "Key": null,
         "Expiry": 0
       }
+    },
+    {
+      "ServiceName": "message-api",
+      "DownstreamPathTemplate": "/{everything}",
+      "UpstreamPathTemplate": "/message/{everything}",
+      "UpstreamHttpMethod": ["GET", "POST", "PUT", "DELETE", "PATCH"],
+      "FileCacheOptions": {
+        "TtlSeconds": 15
+      },
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection",
+        "Key": null,
+        "Expiry": 0
+      }
     }
   ],
   "GlobalConfiguration": {
