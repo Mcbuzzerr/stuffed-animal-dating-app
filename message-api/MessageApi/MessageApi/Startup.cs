@@ -26,7 +26,7 @@ namespace MessageApi
             {
                 options.AddDefaultPolicy(builder =>
                 {
-                    builder.WithOrigins("http://127.0.0.1:3000")
+                    builder.WithOrigins("ocelot-gateway:5041")
                            .AllowAnyMethod()
                            .AllowAnyHeader()
                            .AllowCredentials();
