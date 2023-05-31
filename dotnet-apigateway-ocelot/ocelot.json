@@ -4,13 +4,7 @@
       "ServiceName": "auth-api",
       "DownstreamPathTemplate": "/{everything}",
       "UpstreamPathTemplate": "/auth/{everything}",
-      "UpstreamHttpMethod": [
-        "GET",
-        "POST",
-        "PUT",
-        "DELETE",
-        "PATCH"
-      ],
+      "UpstreamHttpMethod": ["GET", "POST", "PUT", "DELETE", "PATCH"],
       "FileCacheOptions": {
         "TtlSeconds": 15
       },
@@ -24,13 +18,7 @@
       "ServiceName": "profile-api",
       "DownstreamPathTemplate": "/{everything}",
       "UpstreamPathTemplate": "/profile/{everything}",
-      "UpstreamHttpMethod": [
-        "GET",
-        "POST",
-        "PUT",
-        "DELETE",
-        "PATCH"
-      ],
+      "UpstreamHttpMethod": ["GET", "POST", "PUT", "DELETE", "PATCH"],
       "FileCacheOptions": {
         "TtlSeconds": 15
       },

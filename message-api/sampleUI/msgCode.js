@@ -1,5 +1,5 @@
 $(document).ready(function () {
-  const apiUrl = 'https://localhost:55155/api';
+  const apiUrl = 'http://localhost:7474/api';
 
   function sendMessage(sender, recipient, text) {
     const message = {
@@ -86,7 +86,7 @@ $(document).ready(function () {
 
   // Set up SignalR connection
   const connection = new signalR.HubConnectionBuilder()
-    .withUrl('https://localhost:55155/myhub') // Use your HUB URL here
+    .withUrl('http://localhost:7474/myhub') // Use your HUB URL here
     .build();
 
   connection.start().then(function () {

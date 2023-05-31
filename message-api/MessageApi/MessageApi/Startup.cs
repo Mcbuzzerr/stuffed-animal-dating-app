@@ -22,18 +22,16 @@ namespace MessageApi
         }
         public void ConfigureServices(IServiceCollection services)
         {
-            /**
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(builder =>
                 {
-                    builder.WithOrigins("http://ocelot-gateway:5041")
+                    builder.WithOrigins("http://localhost:3000")
                            .AllowAnyMethod()
                            .AllowAnyHeader()
                            .AllowCredentials();
                 });
             });
-            **/
 
             services.AddControllers();
 
@@ -71,9 +69,10 @@ namespace MessageApi
                 c.RoutePrefix = string.Empty; // Set the root URL for Swagger UI
             });
 
+            app.UseCors();
             app.UseRouting();
             app.UseDiscoveryClient();
-            app.UseCors();
+            
 
             app.UseEndpoints(endpoints =>
             {
