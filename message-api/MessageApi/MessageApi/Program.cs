@@ -21,7 +21,6 @@ namespace MessageApi
                 {
                     webBuilder.UseStartup<Startup>()
                         .UseConfiguration(configuration);
-                    webBuilder.UseUrls("http://localhost:7474");
                 });
     }
 }

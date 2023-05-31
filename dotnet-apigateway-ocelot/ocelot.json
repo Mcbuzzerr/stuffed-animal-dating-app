@@ -60,7 +60,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "message-api",
-          "Port": 7474
+          "Port": 80
         }
       ],
       "UpstreamPathTemplate": "/gateway/{catchAll}",

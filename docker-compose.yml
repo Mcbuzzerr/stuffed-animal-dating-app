@@ -59,7 +59,7 @@ services:
     container_name: message-api
     build: ./message-api/MessageApi
     ports:
-      - "7474:7474"
+      - "80:80"
     depends_on:
       - message-db
       - eureka

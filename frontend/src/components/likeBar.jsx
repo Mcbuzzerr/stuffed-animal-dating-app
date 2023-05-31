@@ -52,20 +52,6 @@ export const LikeBar = ({ isDisabled, profile, queuePosition, setQueuePosition, 
                 }
             }
 
-            fetch("http://localhost:7174/api/match",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        "first": profileGUID,
-                        "firstMsg": message,
-                        "second": profile.profileGUID,
-                        "secondMsg": liked_profile_message
-                    })
-                })
-
         }
         setMessage("");
         setLikeDisabled(true);

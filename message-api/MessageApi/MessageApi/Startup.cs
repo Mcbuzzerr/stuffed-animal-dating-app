@@ -22,18 +22,16 @@ namespace MessageApi
         }
         public void ConfigureServices(IServiceCollection services)
         {
-            /**
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(builder =>
                 {
-                    builder.WithOrigins("http://ocelot-gateway:5041")
+                    builder.WithOrigins("http://127.0.0.1:3000")
                            .AllowAnyMethod()
                            .AllowAnyHeader()
                            .AllowCredentials();
                 });
             });
-            **/
 
             services.AddControllers();
 
@@ -47,7 +45,7 @@ namespace MessageApi
             // Register MongoDB dependencies
             services.AddSingleton<IMongoDatabase>(provider =>
             {
-                var mongoClient = new MongoClient("mongodb://root:pass@localhost:27018/?authMechanism=SCRAM-SHA-256");
+                var mongoClient = new MongoClient("mongodb://root:pass@message-db:27017/?authMechanism=SCRAM-SHA-256");
                 return mongoClient.GetDatabase("MessageDB");
             });
 
