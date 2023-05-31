@@ -43,6 +43,29 @@ export const LikeBar = ({ isDisabled, profile, queuePosition, setQueuePosition, 
             console.log("matched!");
             setMatches([...matches, profile]);
             setMatchPopup(true);
+
+            let liked_profile_message = "No message oops, that's a bug";
+
+            for (let i = 0; i < profile.likes.length; i++) {
+                if (profile.likes[i].recipientGUID == profileGUID) {
+                    liked_profile_message = profile.likes[i].message;
+                }
+            }
+
+            fetch("http://localhost:7174/api/match",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        "first": profileGUID,
+                        "firstMsg": message,
+                        "second": profile.profileGUID,
+                        "secondMsg": liked_profile_message
+                    })
+                })
+
         }
         setMessage("");
         setLikeDisabled(true);
