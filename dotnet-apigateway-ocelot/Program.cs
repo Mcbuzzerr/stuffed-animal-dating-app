@@ -60,6 +60,8 @@ app.UseCors(b => b.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
 
 // ocelot
+app.UseWebSockets();
+
 await app.UseOcelot();
 
 app.MapGet("/", () => "Hello World!");

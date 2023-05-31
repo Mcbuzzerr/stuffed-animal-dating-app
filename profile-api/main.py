@@ -271,6 +271,13 @@ async def like_profile(
         raise HTTPException(status_code=404, detail="Profile not found")
     if liked_profile is None:
         raise HTTPException(status_code=404, detail="Liked Profile not found")
+    
+    liked_profile_message = None
+
+    for like in liked_profile.likes:
+        if like.recipientGUID == profileGUID:
+            liked_profile_message = like.message
+            break
 
     profile.likes.append(Like(message=message.message, recipientGUID=liked_profileGUID))
     for like in liked_profile.likes:
@@ -282,12 +289,12 @@ async def like_profile(
             # Call Message API to create a new chat
             print(like.message)
             requests.post(
-                "http://ocelot-gateway:80/message/api/match",
+                "http://localhost:7474/api/match",
                 json={
                     "first": profileGUID,
                     "firstMsg": message.message,
                     "second": liked_profileGUID,
-                    "secondMsg": like.message,
+                    "secondMsg": liked_profile_message
                 },
             )
             print("BREAKPOINT BUT NOT ACTUALLY")

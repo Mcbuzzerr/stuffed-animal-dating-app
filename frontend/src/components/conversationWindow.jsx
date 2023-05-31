@@ -10,13 +10,13 @@ export const ConversationWindow = ({ userProfileGUID, matchProfile }) => {
     const [messageField, setMessageField] = useState("");
     const [messages, setMessages] = useState([]);
     const [connection, setConnection] = useState(null);
-    const apiURL = "https://localhost:55155/api"; //Change to the gateway URL when we have it
+    const apiURL = "http://localhost:7474/api"; //Change to the gateway URL when we have it
     const messageBoxRef = useRef(null);
 
     const startSignalRConnection = async () => {
         const connection = new HubConnectionBuilder()
-            .withUrl("https://localhost:55155/myhub")
-            .build();
+          .withUrl("http://localhost:7474/myhub")
+          .build();
 
 
         await connection.start()
