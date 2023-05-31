@@ -280,15 +280,17 @@ async def like_profile(
             await profile.save()
             await liked_profile.save()
             # Call Message API to create a new chat
+            print(like.message)
             requests.post(
                 "http://ocelot-gateway:80/message/api/match",
                 json={
                     "first": profileGUID,
-                    "firstMsg": message,
+                    "firstMsg": message.message,
                     "second": liked_profileGUID,
                     "secondMsg": like.message,
                 },
             )
+            print("BREAKPOINT BUT NOT ACTUALLY")
             victim_email = requests.get(
                 "http://ocelot-gateway:80/auth/user/from_profileGUID/"
                 + liked_profileGUID
