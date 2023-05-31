@@ -1,18 +1,16 @@
 version: '3'
 services:
-  # next-frontend: # Not needed for now because the front end hardly exists yet
-  #   container_name: next-frontend
-  #   build: ./frontend
-  #   ports:
-  #     - "####:####"
-  #   volumes:
-  #     - .:/app
-  #   environment:
-  #     - NODE_ENV=development
-  #     - CHOKIDAR_USEPOLLING=true
-  #   command: "npm run dev"
-  #   depends_on:
-  #     - all the API services
+  next-frontend:
+    # Not needed for now because the front end hardly exists yet
+    container_name: next-frontend
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - gateway
+      - auth-api
+      - profile-api
+      - message-api
   auth-api:
     container_name: auth-api
     build: ./auth-api
