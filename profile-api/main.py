@@ -274,13 +274,10 @@ async def like_profile(
     
     liked_profile_message = None
 
-    for like in liked_profile.get('likes', []):
-        if like.get('recipientGUID') == str(profile.get('profileGUID')):
-            liked_profile_message = like.get('message')
+    for like in liked_profile.likes:
+        if like.recipientGUID == profileGUID:
+            liked_profile_message = like.message
             break
-
-    if liked_profile_message is None:
-        raise HTTPException(status_code=404, detail="Liked profile message not found")
 
     profile.likes.append(Like(message=message.message, recipientGUID=liked_profileGUID))
     for like in liked_profile.likes:
@@ -291,7 +288,7 @@ async def like_profile(
             await liked_profile.save()
             # Call Message API to create a new chat
             requests.post(
-                "http://ocelot-gateway:80/message/api/match",
+                "http://localhost:7474/api/match",
                 json={
                     "first": profileGUID,
                     "firstMsg": message,

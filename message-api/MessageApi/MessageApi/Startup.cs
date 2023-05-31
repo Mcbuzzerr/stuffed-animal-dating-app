@@ -22,16 +22,18 @@ namespace MessageApi
         }
         public void ConfigureServices(IServiceCollection services)
         {
+            /**
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(builder =>
                 {
-                    builder.WithOrigins("ocelot-gateway:5041")
+                    builder.WithOrigins("http://ocelot-gateway:5041")
                            .AllowAnyMethod()
                            .AllowAnyHeader()
                            .AllowCredentials();
                 });
             });
+            **/
 
             services.AddControllers();
 
