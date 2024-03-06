@@ -2,7 +2,7 @@
 
 ## Architecture
 
-<img src="./Diagrams/ServiceDiagram2.png" alt="Architecture" width="500px" />
+<img src="https://github.com/Mcbuzzerr/stuffed-animal-dating-app/blob/main/Diagrams/serviceDiagram2.png" alt="Architecture" width="500px" />
 
 ## Env variables
 
